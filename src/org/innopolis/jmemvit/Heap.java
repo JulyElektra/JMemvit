@@ -13,26 +13,25 @@ import com.sun.jdi.VirtualMachine;
 
 public class Heap {
 	
-
 	public static VirtualMachine getJVM(IStackFrame frame){
 		if (frame == null){return null;}
-		VirtualMachine JVM = null;
+		VirtualMachine jvm = null;
 		ILaunch launch = frame.getLaunch();	
-		Object[] LaucnChildren = launch.getChildren();
-		for (Object child : LaucnChildren){
+		Object[] laucnChildren = launch.getChildren();
+		for (Object child : laucnChildren){
 			if (child instanceof org.eclipse.jdt.internal.debug.core.model.JDIDebugTarget){
-				JDIDebugTarget DebugTarget = (JDIDebugTarget) child;
-				JVM = DebugTarget.getVM();
+				JDIDebugTarget debugTarget = (JDIDebugTarget) child;
+				jvm = debugTarget.getVM();
 				break;
 			}						
 		}			
-		return JVM;
+		return jvm;
 	}
 	
 	public static List<ReferenceType> getAllMyClasses(VirtualMachine jvm){
-		List<ReferenceType> AllClasses = jvm.allClasses();
-		List<ReferenceType> AllMyClasses = new  ArrayList<ReferenceType>();
-		for (ReferenceType Class : AllClasses){
+		List<ReferenceType> allClasses = jvm.allClasses();
+		List<ReferenceType> allMyClasses = new  ArrayList<ReferenceType>();
+		for (ReferenceType Class : allClasses){
 			  String className = Class.name();
 			  boolean print = true;
 			  if (className.contains("java.")){print = false;}
@@ -57,25 +56,25 @@ public class Heap {
 			  //if (className.contains("java.lang.StringC")){print = false;}
 			  //if (className.contains("java.lang.Integer$")){print = false;}
 			  //if (className.contains("java.lang.String$")){print = false;}
-			  if (print){AllMyClasses.add(Class);}			  
+			  if (print){allMyClasses.add(Class);}			  
 		}	
-		return AllMyClasses;
+		return allMyClasses;
   }
 	
-	public static List<ReferenceType> sortByHashCode (List<ReferenceType>  ParentClasses){
-		if (ParentClasses==null){return null;}
-		if (ParentClasses.size()<2){return ParentClasses;}
+	public static List<ReferenceType> sortByHashCode (List<ReferenceType>  parentClasses){
+		if (parentClasses==null){return null;}
+		if (parentClasses.size()<2){return parentClasses;}
 		
-		for (int i = 0; i < ParentClasses.size(); i++){
+		for (int i = 0; i < parentClasses.size(); i++){
 			
-			for (int k = i; k<ParentClasses.size(); k++){
-				if (ParentClasses.get(k).hashCode()<ParentClasses.get(i).hashCode()){
-					ReferenceType temp = ParentClasses.get(i);
-					ParentClasses.set(i, ParentClasses.get(k));
-					ParentClasses.set(k, temp);					
+			for (int k = i; k<parentClasses.size(); k++){
+				if (parentClasses.get(k).hashCode()<parentClasses.get(i).hashCode()){
+					ReferenceType temp = parentClasses.get(i);
+					parentClasses.set(i, parentClasses.get(k));
+					parentClasses.set(k, temp);					
 				}
 			}
 		}
-		return ParentClasses;
+		return parentClasses;
 	}
 }

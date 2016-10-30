@@ -17,7 +17,7 @@ import org.eclipse.jdt.debug.core.IJavaThread;
 
 public class StackView extends ViewPart {
 
-	/*private DebugEventListener jdiEventListener = null;
+	private DebugEventListener jdiEventListener = null;
 	private Tree tree = null;
 
 	class RunnableForThread2 implements Runnable{
@@ -28,20 +28,20 @@ public class StackView extends ViewPart {
 				Display.getDefault().asyncExec(task);
 			}			
 		}
-	}*/
+	}
 	
 	@Override
 	public void createPartControl(Composite parent) {
 		
-		/*createTree(parent);
+		createTree(parent);
 		
 		this.jdiEventListener = new DebugEventListener();
 		DebugPlugin.getDefault().addDebugEventListener(this.jdiEventListener);
 		//JDIDebugModel.addJavaBreakpointListener(this);
 		
 		Runnable runnable = new RunnableForThread2();
-		Thread Thread2 = new Thread(runnable);
-		Thread2.start();*/
+		Thread thread2 = new Thread(runnable);
+		thread2.start();
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class StackView extends ViewPart {
 	}
 	
 	
-	/*private void createTree(Composite parent){
+	private void createTree(Composite parent){
 		this.tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		this.tree.setHeaderVisible(true);
 		this.tree.setLinesVisible(true);		
@@ -65,24 +65,24 @@ public class StackView extends ViewPart {
 		if(jdiEventListener == null){return;}
 		if (!jdiEventListener.isItUpdatedThread()){return;}
 
-		IJavaThread CurrentThread =  jdiEventListener.getCurrentThread();	
-		IStackFrame[] Frames = DebugEventListener.getStackFrames(CurrentThread);		
+		IJavaThread currentThread =  jdiEventListener.getCurrentThread();	
+		IStackFrame[] frames = Stack.getStackFrames(currentThread);		
 		
-		if (Frames == null){return;}
+		if (frames == null){return;}
 		for (TreeItem item : tree.getItems()){item.dispose();}
 	
-		for (int i = 0; i< Frames.length; i++){
+		for (int i = 0; i< frames.length; i++){
 
-			IStackFrame frame = Frames[i];
-			String FrameName = DebugEventListener.getStackFrameName(frame);
+			IStackFrame frame = frames[i];
+			String frameName = Stack.getStackFrameName(frame);
 			
 			TreeItem item = new TreeItem(tree, SWT.LEFT);
-			item.setText(0, FrameName);	
+			item.setText(0, frameName);	
 					
 			TreeItem subItem;
 			
 			subItem = new TreeItem(item, SWT.LEFT);
-			int lineNumber = DebugEventListener.getStackFrameLineNumber(frame);
+			int lineNumber = Stack.getStackFrameLineNumber(frame);
 			subItem.setText(0, "line number : " + lineNumber);
 	
 			//subItem = new TreeItem(item, SWT.LEFT);
@@ -91,7 +91,7 @@ public class StackView extends ViewPart {
 			//subItem = new TreeItem(item, SWT.LEFT);
 			//subItem.setText(0, "ReturnAddress : ");			
 		
-			IVariable[] variables = DebugEventListener.getStackFrameVariables(frame);
+			IVariable[] variables = Stack.getStackFrameVariables(frame);
 			if (variables != null){
 				for (IVariable variable : variables){
 					String valueString = "";
@@ -107,12 +107,7 @@ public class StackView extends ViewPart {
 					subItem.setText(0,referenceTypeName + " " + variable.toString() + " : " + valueString);					
 				}
 			}
-		
-	}	*/
+		}	
 	
-	
-	
-
-	
-
+	}
 }

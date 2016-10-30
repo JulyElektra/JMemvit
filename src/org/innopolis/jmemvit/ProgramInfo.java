@@ -1,7 +1,12 @@
 package org.innopolis.jmemvit;
 
+import java.util.ArrayList;
+
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IStackFrame;
+import org.eclipse.debug.core.model.IValue;
+import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -21,7 +26,13 @@ public class ProgramInfo extends ViewPart {
 		public void run() {
 			while (true) {
 				try { Thread.sleep(1000); } catch (Exception e) { }
-				Runnable task = () -> { vizualizateProgramInfoJava();};
+				Runnable task = () -> { 
+					try {
+						vizualizateProgramInfoJava();
+					} catch (DebugException e) {						
+						e.printStackTrace();
+					}
+				};
 				Display.getDefault().asyncExec(task);
 			}			
 		}
@@ -47,8 +58,8 @@ public class ProgramInfo extends ViewPart {
 		
 		
 		Runnable runnable = new RunnableForThread2();
-		Thread Thread2 = new Thread(runnable);
-		Thread2.start();	
+		Thread thread2 = new Thread(runnable);
+		thread2.start();	
 	}
 	
 
@@ -56,26 +67,100 @@ public class ProgramInfo extends ViewPart {
 	public void setFocus() {
 	}
 
-	public void vizualizateProgramInfoJava(){	
-		if(jdiEventListener == null){return;}		
-		if (!jdiEventListener.isItUpdatedThread()){return;}
+	/*
+	 * Method visualizes information in ProgramView
+	 */
+	public void vizualizateProgramInfoJava() throws DebugException{
+			
+		// Check if there is any updates
+		if (hasEventUpdates()) {
+			for (TreeItem item : tree.getItems()){
+				item.dispose();
+			}
+			
+			
+			// Visualization
+			visualize(StackToString());
+			visualize(HeapToString());			
+		}
+		else {
+			// There is no updates or nothing
+			// to update in visualization
+		}
+	}
 
-		IJavaThread CurrentThread =  jdiEventListener.getCurrentThread();	
-		IStackFrame topFrame = Stack.getTopStackFrame(CurrentThread);		
-		
-		if (topFrame == null){return;}
-		
-		for (TreeItem item : tree.getItems()){item.dispose();}
-				
-		String frameName = Stack.getStackFrameName(topFrame);
-		int lineNumber = Stack.getStackFrameLineNumber(topFrame);
-		
-		TreeItem item = new TreeItem(tree, SWT.LEFT);
-		item.setText(0, "ProgramCounter : " + frameName + " " + lineNumber);	
+	private void visualize(ArrayList<String> stringsToVisualize) {
+		if (stringsToVisualize != null) {
+			for (String stringToVisualize: stringsToVisualize){
+				TreeItem item = new TreeItem(tree, SWT.LEFT);
+				item.setText(0, stringToVisualize);
+			}			
+		}
+		else {
+			// String is null
+			// Nothing to be visualized
+		}
+			
+	}
 
-		TreeItem item2 = new TreeItem(tree, SWT.LEFT);
-		item2.setText(0, "StackPointer : ");	
+	private ArrayList<String> HeapToString() {
+		// TODO Auto-generated method stub
+		// Get current thread to extract data
+		IJavaThread currentThread = jdiEventListener.getCurrentThread();	
+		return null;
+	}
+
+	private ArrayList<String> StackToString() throws DebugException {
 		
+		// Get current thread to extract data
+		IJavaThread currentThread = jdiEventListener.getCurrentThread();
+		
+		// Get top stack frame
+		IStackFrame topFrame = Stack.getTopStackFrame(currentThread);
+		
+		// If stack is not empty
+		if (topFrame != null){
+						
+			// Get name of top stack item
+			String frameName = Stack.getStackFrameName(topFrame);
+			
+			// Get line number of top stack item
+			int lineNumber = Stack.getStackFrameLineNumber(topFrame);
+			
+			ArrayList<String> stackStrings = new ArrayList<>();
+			
+			// Add frame name and line number to the array
+			stackStrings.add("ProgramCounter: " + frameName + " " + lineNumber);
+			
+			// Get Variables of top stack item
+			IVariable[] vars = Stack.getStackFrameVariables(topFrame);
+			ArrayList<String> varStrings = Stack.stackFrameVariablesToStrings(vars);
+			
+			// Add variables to the array
+			for (String varString: varStrings){
+				stackStrings.add(varString);
+			}
+			
+			return stackStrings;
+		}
+		else {
+			// Stack is empty
+			return null;
+		}
+	}
+
+	/* 
+	 * Method checks if there was any changes in events. Result will 
+	 * be used for deciding if it is needed to refresh view or not.
+	 */
+	private boolean hasEventUpdates() {
+		// if events are exists and there is changers in event
+		if(jdiEventListener != null && jdiEventListener.isItUpdatedThread()) {
+			return true;
+		}
+		else {
+			return false;
+		}
 		
 	}
 	

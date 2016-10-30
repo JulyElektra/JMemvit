@@ -23,7 +23,7 @@ import org.eclipse.swt.SWT;
 
 
 public class HeapView extends ViewPart{
-	/*private DebugEventListener jdiEventListener = null;
+	private DebugEventListener jdiEventListener = null;
 	private Tree treeOne;
 	private Tree treeTwo;
 
@@ -35,20 +35,20 @@ public class HeapView extends ViewPart{
 				Display.getDefault().asyncExec(task);
 			}			
 		}
-	}*/
+	}
 		
 	@Override
 	public void createPartControl(Composite parent) {
 		
-		/*createTreeOne(parent);
+		createTreeOne(parent);
 		createTreeTwo(parent);
 
 		jdiEventListener = new DebugEventListener();
 		DebugPlugin.getDefault().addDebugEventListener(jdiEventListener);
 		
 		Runnable runnable = new RunnableForThread2();
-		Thread Thread2 = new Thread(runnable);
-		Thread2.start();	*/
+		Thread thread2 = new Thread(runnable);
+		thread2.start();	
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class HeapView extends ViewPart{
 	}
 	
 
-	/*private void createTreeOne(Composite parent){
+	private void createTreeOne(Composite parent){
 		treeOne = new Tree(parent, SWT.MIN);
 		treeOne.setHeaderVisible(true);
 		treeOne.setLinesVisible(true);		
@@ -84,21 +84,21 @@ public class HeapView extends ViewPart{
 		if(jdiEventListener == null){return;}		
 		if (!jdiEventListener.isItUpdatedThread()){return;}
 		
-		IJavaThread CurrentThread =  jdiEventListener.getCurrentThread();	
-		IStackFrame topFrame = DebugEventListener.getTopStackFrame(CurrentThread);		
+		IJavaThread currentThread =  jdiEventListener.getCurrentThread();	
+		IStackFrame topFrame = Stack.getTopStackFrame(currentThread);		
 		
-		VirtualMachine JVM = DebugEventListener.getJVM(topFrame);	
-		if (JVM == null){return;}
+		VirtualMachine jvm = Heap.getJVM(topFrame);	
+		if (jvm == null){return;}
 	
 		for (TreeItem item : treeOne.getItems()){item.dispose();}
 		for (TreeItem item : treeTwo.getItems()){item.dispose();}
 		
-		List<ReferenceType> AllMyClasses = DebugEventListener.getAllMyClasses(JVM);
-		AllMyClasses = DebugEventListener.sortByHashCode(AllMyClasses);
-		for(ReferenceType Class : AllMyClasses){
+		List<ReferenceType> allMyClasses = Heap.getAllMyClasses(jvm);
+		allMyClasses = Heap.sortByHashCode(allMyClasses);
+		for(ReferenceType Class : allMyClasses){
 			VizualizateClass(Class);
-			List<ObjectReference> Instances = Class.instances(0);
-			for (ObjectReference instance : Instances){VizualizateClassInstance(instance);}	
+			List<ObjectReference> instances = Class.instances(0);
+			for (ObjectReference instance : instances){VizualizateClassInstance(instance);}	
 		}
 
 	}
@@ -127,53 +127,53 @@ public class HeapView extends ViewPart{
 		}	
 	}
 	
-	private void VizualizateClassInstance(ObjectReference Instance){
+	private void VizualizateClassInstance(ObjectReference instance){
 
 		TreeItem item = new TreeItem(treeTwo, SWT.LEFT);
-		item.setText(0, Instance.toString());
+		item.setText(0, instance.toString());
 
-		List<ReferenceType> ParentClasses = new ArrayList<ReferenceType>();
-		List<Method> methods = Instance.referenceType().allMethods();
+		List<ReferenceType> parentClasses = new ArrayList<ReferenceType>();
+		List<Method> methods = instance.referenceType().allMethods();
 		for (Method method : methods){
-			ReferenceType Type =  method.declaringType();
+			ReferenceType type =  method.declaringType();
 			boolean isExist = false;
-			for (ReferenceType ParentClass : ParentClasses){if (ParentClass.equals(Type)){isExist = true;}}
-			if (!isExist){ParentClasses.add(Type);}
+			for (ReferenceType parentClass : parentClasses){if (parentClass.equals(type)){isExist = true;}}
+			if (!isExist){parentClasses.add(type);}
 		}		
-		ParentClasses = DebugEventListener.sortByHashCode(ParentClasses);
+		parentClasses = Heap.sortByHashCode(parentClasses);
 		
 		//the first item placed to the end 
-		ReferenceType temp = ParentClasses.get(0);
-		ParentClasses.remove(0);
-		ParentClasses.add(temp);
+		ReferenceType temp = parentClasses.get(0);
+		parentClasses.remove(0);
+		parentClasses.add(temp);
 		
-		for (ReferenceType ParentClass : ParentClasses){
+		for (ReferenceType parentClass : parentClasses){
 			
 			TreeItem subItem = new TreeItem(item, SWT.LEFT);
-			subItem.setText(0, ParentClass.toString());
+			subItem.setText(0, parentClass.toString());
 			
 			TreeItem subsubItem = new TreeItem(subItem, SWT.LEFT);
-			if (Instance.type() != null){subsubItem.setText(0, Instance.type().name());}
-			subsubItem.setText(0, "this : @" + Instance.hashCode());
+			if (instance.type() != null){subsubItem.setText(0, instance.type().name());}
+			subsubItem.setText(0, "this : @" + instance.hashCode());
 
 			
 			subsubItem = new TreeItem(subItem, SWT.LEFT);
-			subsubItem.setText(0, "class : @" + ParentClass.hashCode());
+			subsubItem.setText(0, "class : @" + parentClass.hashCode());
 		
 
-			List<Field> Parentfields = ParentClass.fields();
-			for (Field field : Parentfields){
+			List<Field> parentfields = parentClass.fields();
+			for (Field field : parentfields){
 				if (field.isStatic()){continue;}
 					String valueString = "";
-					Value value = Instance.getValue(field);
+					Value value = instance.getValue(field);
 					if(value == null){valueString = "null";}else{valueString = value.toString();}
-					if (valueString.contains("id")){valueString = "@"+Instance.getValue(field).hashCode();}
-					if (field.typeName() != null && value !=null && field.typeName().equals("java.lang.String")){valueString = "@"+Instance.getValue(field).hashCode();}	
+					if (valueString.contains("id")){valueString = "@"+instance.getValue(field).hashCode();}
+					if (field.typeName() != null && value !=null && field.typeName().equals("java.lang.String")){valueString = "@"+instance.getValue(field).hashCode();}	
 				
 					subsubItem = new TreeItem(subItem, SWT.LEFT);
 					subsubItem.setText(0, ""+field.typeName() + " " + field + " : " + valueString);			
 			}	
 		}		
-	}*/
+	}
 
 }

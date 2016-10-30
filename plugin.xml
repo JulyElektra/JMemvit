@@ -17,7 +17,7 @@
       </view>
       <view
             category="Plugin2"
-            class="org.innopolis.jmemvit.Heap"
+            class="org.innopolis.jmemvit.HeapView"
             icon="icons/sample.gif"
             id="plugin2.views.Heap"
             name="%view.name.0">

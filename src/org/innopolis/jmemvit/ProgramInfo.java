@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
 
 
-
 public class ProgramInfo extends ViewPart {
 
 	private DebugEventListener jdiEventListener = null;
@@ -62,14 +61,14 @@ public class ProgramInfo extends ViewPart {
 		if (!jdiEventListener.isItUpdatedThread()){return;}
 
 		IJavaThread CurrentThread =  jdiEventListener.getCurrentThread();	
-		IStackFrame topFrame = DebugEventListener.getTopStackFrame(CurrentThread);		
+		IStackFrame topFrame = Stack.getTopStackFrame(CurrentThread);		
 		
 		if (topFrame == null){return;}
 		
 		for (TreeItem item : tree.getItems()){item.dispose();}
 				
-		String frameName = DebugEventListener.getStackFrameName(topFrame);
-		int lineNumber = DebugEventListener.getStackFrameLineNumber(topFrame);
+		String frameName = Stack.getStackFrameName(topFrame);
+		int lineNumber = Stack.getStackFrameLineNumber(topFrame);
 		
 		TreeItem item = new TreeItem(tree, SWT.LEFT);
 		item.setText(0, "ProgramCounter : " + frameName + " " + lineNumber);	

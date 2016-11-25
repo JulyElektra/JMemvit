@@ -23,3 +23,5 @@ Import-Package: com.sun.jdi,
  org.eclipse.jdt.internal.debug.core.model
 Export-Package: org.innopolis.jmemvit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: lib/json-20160810.jar,
+ .

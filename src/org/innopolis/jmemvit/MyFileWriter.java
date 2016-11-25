@@ -8,12 +8,12 @@ import java.io.PrintWriter;
 import javax.swing.JOptionPane;
 
 public class MyFileWriter {
-	File filename;
+	private static File filename = new File ("/home/yuliya/Thesis/Eclipse Project/JMemvit/src/org/innopolis/jmemvit/output.txt");
 	public MyFileWriter(String filePath) {
 		filename = new File(filePath);
 	}
 	
-	public void write(String stringToWrite){
+	public static void write(String stringToWrite){
 		try {
 		    FileWriter fWriter = new FileWriter (filename, true);
 		    PrintWriter pWriter = new PrintWriter (fWriter);

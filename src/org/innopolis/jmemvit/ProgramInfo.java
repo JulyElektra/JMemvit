@@ -68,20 +68,31 @@ public class ProgramInfo extends ViewPart {
 	}
 
 	/*
-	 * Method visualizes information in ProgramView
+	 * Method visualizes all elements in ProgramView
 	 */
 	public void vizualizateProgramInfoJava() throws DebugException{
 			
 		// Check if there is any updates
-		if (hasEventUpdates()) {
+		if (hasEventUpdates()) {			
 			for (TreeItem item : tree.getItems()){
 				item.dispose();
-			}
+			}			
 			
-			
+			//TODO visualize all frames, not only TOP
+			IStackFrame topFrame = getActualTopStackFrame();
+			IStackFrame[] frames = getActualStackFrames();
 			// Visualization
-			visualize(StackToString());
-			visualize(HeapToString());			
+			ArrayList<String> stack = Stack.getStackFrameStrings(topFrame);
+			visualize(stack);
+			JsonBuilder jsonBuilder = new JsonBuilder();
+			jsonBuilder.addStackToJson(frames).toString();			
+			
+			ArrayList<String> heap = Heap.getHeapStrings(frames);
+			jsonBuilder.addHeapToJson(frames);
+			visualize(heap);
+			
+			String jsonString = jsonBuilder.getJson().toString();
+			MyFileWriter.write(jsonString);
 		}
 		else {
 			// There is no updates or nothing
@@ -89,6 +100,9 @@ public class ProgramInfo extends ViewPart {
 		}
 	}
 
+	/*
+	 * Method visualizes particular element
+	 */
 	private void visualize(ArrayList<String> stringsToVisualize) {
 		if (stringsToVisualize != null) {
 			for (String stringToVisualize: stringsToVisualize){
@@ -99,54 +113,31 @@ public class ProgramInfo extends ViewPart {
 		else {
 			// String is null
 			// Nothing to be visualized
-		}
-			
+		}			
 	}
-
-	private ArrayList<String> HeapToString() {
-		// TODO Auto-generated method stub
-		// Get current thread to extract data
-		IJavaThread currentThread = jdiEventListener.getCurrentThread();	
-		return null;
-	}
-
-	private ArrayList<String> StackToString() throws DebugException {
-		
+	
+	/* 
+	 * This method returns top stack frame of current thread
+	 */
+	private IStackFrame getActualTopStackFrame() {
 		// Get current thread to extract data
 		IJavaThread currentThread = jdiEventListener.getCurrentThread();
-		
+				
 		// Get top stack frame
 		IStackFrame topFrame = Stack.getTopStackFrame(currentThread);
-		
-		// If stack is not empty
-		if (topFrame != null){
-						
-			// Get name of top stack item
-			String frameName = Stack.getStackFrameName(topFrame);
-			
-			// Get line number of top stack item
-			int lineNumber = Stack.getStackFrameLineNumber(topFrame);
-			
-			ArrayList<String> stackStrings = new ArrayList<>();
-			
-			// Add frame name and line number to the array
-			stackStrings.add("ProgramCounter: " + frameName + " " + lineNumber);
-			
-			// Get Variables of top stack item
-			IVariable[] vars = Stack.getStackFrameVariables(topFrame);
-			ArrayList<String> varStrings = Stack.stackFrameVariablesToStrings(vars);
-			
-			// Add variables to the array
-			for (String varString: varStrings){
-				stackStrings.add(varString);
-			}
-			
-			return stackStrings;
-		}
-		else {
-			// Stack is empty
-			return null;
-		}
+		return topFrame;
+	}
+	
+	/* 
+	 * This method returns stack frames of current thread
+	 */
+	private IStackFrame[] getActualStackFrames() {
+		// Get current thread to extract data
+		IJavaThread currentThread = jdiEventListener.getCurrentThread();
+				
+		// Get stack frames
+		IStackFrame[] frames = Stack.getStackFrames(currentThread);
+		return frames;
 	}
 
 	/* 
@@ -154,11 +145,13 @@ public class ProgramInfo extends ViewPart {
 	 * be used for deciding if it is needed to refresh view or not.
 	 */
 	private boolean hasEventUpdates() {
-		// if events are exists and there is changers in event
+		
 		if(jdiEventListener != null && jdiEventListener.isItUpdatedThread()) {
+			// Events exist and there is changers in event
 			return true;
 		}
 		else {
+			// There is no events or there is not changers in event
 			return false;
 		}
 		

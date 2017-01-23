@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IStackFrame;
-import org.eclipse.debug.core.model.IValue;
-import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -17,7 +15,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
 
 
-public class ProgramInfo extends ViewPart {
+public class ViewManager extends ViewPart {
 
 	private DebugEventListener jdiEventListener = null;
 	private Tree tree;
@@ -28,7 +26,7 @@ public class ProgramInfo extends ViewPart {
 				try { Thread.sleep(1000); } catch (Exception e) { }
 				Runnable task = () -> { 
 					try {
-						vizualizateProgramInfoJava();
+						vizualizateView();
 					} catch (DebugException e) {						
 						e.printStackTrace();
 					}
@@ -38,10 +36,6 @@ public class ProgramInfo extends ViewPart {
 		}
 	}
 	
-	
-	public ProgramInfo() {
-	}
-
 	@Override
 	public void createPartControl(Composite parent) {
 		tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -68,9 +62,9 @@ public class ProgramInfo extends ViewPart {
 	}
 
 	/*
-	 * Method visualizes all elements in ProgramView
+	 * Method visualizes all elements in view
 	 */
-	public void vizualizateProgramInfoJava() throws DebugException{
+	public void vizualizateView() throws DebugException{
 			
 		// Check if there is any updates
 		if (hasEventUpdates()) {			
@@ -78,18 +72,21 @@ public class ProgramInfo extends ViewPart {
 				item.dispose();
 			}			
 			
-			//TODO visualize all frames, not only TOP
 			IStackFrame topFrame = getActualTopStackFrame();
 			IStackFrame[] frames = getActualStackFrames();
-			// Visualization
-			ArrayList<String> stack = Stack.getStackFrameStrings(topFrame);
-			visualize(stack);
-			JsonBuilder jsonBuilder = new JsonBuilder();
-			jsonBuilder.addStackToJson(frames).toString();			
+			Stack stack = new Stack(frames);
+			Heap heap = new Heap(stack);
 			
-			ArrayList<String> heap = Heap.getHeapStrings(frames);
-			jsonBuilder.addHeapToJson(frames);
-			visualize(heap);
+			// Visualization
+			//TODO visualize all frames, not only TOP
+			ArrayList<String> stackStrings = stack.getStackFrameStrings(topFrame);
+			visualize(stackStrings);
+			JsonBuilder jsonBuilder = new JsonBuilder(frames);
+			jsonBuilder.addStackToJson();			
+			
+			ArrayList<String> heapStrings = heap.getHeapStrings();
+			jsonBuilder.addHeapToJson();
+			visualize(heapStrings);
 			
 			String jsonString = jsonBuilder.getJson().toString();
 			MyFileWriter.write(jsonString);
@@ -122,9 +119,10 @@ public class ProgramInfo extends ViewPart {
 	private IStackFrame getActualTopStackFrame() {
 		// Get current thread to extract data
 		IJavaThread currentThread = jdiEventListener.getCurrentThread();
+		Stack stack = new Stack(currentThread);
 				
 		// Get top stack frame
-		IStackFrame topFrame = Stack.getTopStackFrame(currentThread);
+		IStackFrame topFrame = stack.getTopStackFrame();
 		return topFrame;
 	}
 	
@@ -134,9 +132,10 @@ public class ProgramInfo extends ViewPart {
 	private IStackFrame[] getActualStackFrames() {
 		// Get current thread to extract data
 		IJavaThread currentThread = jdiEventListener.getCurrentThread();
+		Stack stack = new Stack(currentThread);
 				
 		// Get stack frames
-		IStackFrame[] frames = Stack.getStackFrames(currentThread);
+		IStackFrame[] frames = stack.getStackFrames();
 		return frames;
 	}
 

@@ -14,16 +14,23 @@ import org.json.*;
 
 public class JsonBuilder {
 	private JSONObject json = new JSONObject();
+	private Stack stack;
+	private Heap heap;	
 	
+	public JsonBuilder(IStackFrame[] frames) {
+		this.stack = new Stack(frames) ;
+		this.heap = new Heap(stack);
+	}
+
 	public JSONObject getJson() {
 		return json;
 	}
 	
-	public JSONObject addHeapToJson(IStackFrame[] frames) throws DebugException {
-		String date = getDateTime();	
-		ArrayList<IVariable> vars = Heap.getHeap(frames);
+	public JSONObject addHeapToJson() throws DebugException {
+		String date = getDateTime();
+		ArrayList<IVariable> vars = heap.getHeap();
 		Map<String, Object> varsMap = new HashMap<String, Object>();
-		ArrayList<Map<String, String>> varsList = getVarsList(vars);
+		ArrayList<Map<String, String>> varsList = Variable.getVarsList(vars);
 		varsMap.put(Global.VARIABLES, varsList);	
 		Map<String, Object> heapMap = new HashMap<String, Object>();
 		heapMap.put(Global.HEAP, varsMap);
@@ -31,33 +38,17 @@ public class JsonBuilder {
 		return json;		
 	}
 	
-	private ArrayList<Map<String, String>> getVarsList (ArrayList<IVariable> vars) throws DebugException {
-		
-		ArrayList<Map<String, String>> varsList = new ArrayList<Map<String, String>>();
-		for (IVariable var: vars) {
-			Map<String, String> varMap = new HashMap<String, String>();
-			String varName = var.getName().toString();
-			varMap.put(Global.NAME, varName);
-			String varValue = var.getValue().toString();
-			varMap.put(Global.VALUE, varValue);
-			String varType = var.getReferenceTypeName();
-			varMap.put(Global.TYPE, varType);				
-			varsList.add(varMap);
-		}
-		return varsList;
-		
-	}
-	
-	public JSONObject addStackToJson(IStackFrame[] frames) throws DebugException {
+	public JSONObject addStackToJson() throws DebugException {
+		IStackFrame[] frames = stack.getStackFrames();
 		String date = getDateTime();	
 		Map<String, Object> frameMap = new HashMap<String, Object>();
 		for (int frameNum = 0; frameNum < frames.length; frameNum++) {
-			String frameName = Stack.getStackFrameName(frames[frameNum]);
+			String frameName = stack.getStackFrameName(frames[frameNum]);
 			String frameCalssName = frames[frameNum].getVariables()[0].getReferenceTypeName().toString();//
-			IVariable[] vars = Stack.getStackFrameVariables(frames[frameNum]);
+			IVariable[] vars = stack.getStackFrameVariables(frames[frameNum]);
 			ArrayList<IVariable> varsArrList = new ArrayList<IVariable>(Arrays.asList(vars));
 			Map<String, Object> varsMap = new HashMap<String, Object>();
-			ArrayList<Map<String, String>> varsList = getVarsList(varsArrList);
+			ArrayList<Map<String, String>> varsList = Variable.getVarsList(varsArrList);
 			varsMap.put(Global.VARIABLES, varsList);			
 			frameMap.put((frameNum + " " + frameCalssName + "." + frameName).toString(), varsMap);
 		}
@@ -73,5 +64,5 @@ public class JsonBuilder {
 		String dateStr = dateFormated.format(date);
 		return dateStr;		
 	}
-	
+		
 }

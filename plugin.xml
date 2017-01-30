@@ -12,11 +12,10 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
-            category="Plugin2"
             class="org.innopolis.jmemvit.ViewManager"
             id="JMemvit.view1"
-            name="JMemViT"
-            restorable="false">
+            name="JMemvit"
+            restorable="true">
       </view>
    </extension>
 

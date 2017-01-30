@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
-import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.jdt.debug.core.IJavaThread;
 
@@ -55,21 +54,20 @@ public class Stack {
 		return vars;
 	}
 	
-
 	
 	/*
 	 * This method returns array of strings, that consists data from
-	 * stack. Result will be used for visualization of stack data
+	 * stack frame. Result will be used for visualization of stack data
 	 */
 	public ArrayList<String> getStackFrameStrings(IStackFrame frame) throws DebugException {
 	
-		// If stack is not empty
+		// If stack frame is not empty
 		if (frame != null){
 						
-			// Get name of top stack item
+			// Get name of the stack item
 			String frameName = getStackFrameName(frame);
 			
-			// Get line number of top stack item
+			// Get line number of the stack item
 			int lineNumber = getStackFrameLineNumber(frame);
 			
 			ArrayList<String> stackStrings = new ArrayList<>();
@@ -78,7 +76,7 @@ public class Stack {
 			// Add frame name and line number to the array
 			stackStrings.add(Global.PROGRAM_COUNTER + ": " + frameName + " " + lineNumber);
 			
-			// Get Variables of top stack item
+			// Get Variables of the stack item
 			IVariable[] vars = getStackFrameVariables(frame);
 			ArrayList<String> varStrings = Variable.toStrings(vars);
 			
@@ -90,7 +88,7 @@ public class Stack {
 			return stackStrings;
 		}
 		else {
-			// Stack is empty
+			// Stack frame is empty
 			return null;
 		}
 	}

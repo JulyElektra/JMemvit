@@ -13,12 +13,14 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
+import org.json.JSONObject;
 
 
 public class ViewManager extends ViewPart {
 
 	private DebugEventListener jdiEventListener = null;
 	private Tree tree;
+	private JsonBuilder jsonBuilder = new JsonBuilder();
 	
 	class RunnableForThread2 implements Runnable{
 		public void run() {
@@ -81,14 +83,12 @@ public class ViewManager extends ViewPart {
 			//TODO visualize all frames, not only TOP
 			ArrayList<String> stackStrings = stack.getStackFrameStrings(topFrame);
 			visualize(stackStrings);
-			JsonBuilder jsonBuilder = new JsonBuilder(frames);
-			jsonBuilder.addStackToJson();			
 			
-			ArrayList<String> heapStrings = heap.getHeapStrings();
-			jsonBuilder.addHeapToJson();
+			ArrayList<String> heapStrings = heap.getHeapStrings();		
 			visualize(heapStrings);
 			
-			String jsonString = jsonBuilder.getJson().toString();
+			JSONObject json = jsonBuilder.getJson(frames);
+			String jsonString = json.toString();
 			MyFileWriter.write(jsonString);
 		}
 		else {

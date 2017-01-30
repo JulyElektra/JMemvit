@@ -9,6 +9,15 @@ import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 
 public class Variable {
+	private String name;
+	private String type;
+	private String value;
+	
+	public Variable(String name, String type, String value) {
+		this.name = name;
+		this.type = type;
+		this.value = value;
+	}
 
 	// TODO refactoring
 	public static ArrayList<String> toStrings (Object[] vars) throws DebugException{

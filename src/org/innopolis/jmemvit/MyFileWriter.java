@@ -15,7 +15,7 @@ public class MyFileWriter {
 	
 	public static void write(String stringToWrite){
 		try {
-		    FileWriter fWriter = new FileWriter (filename, true);
+		    FileWriter fWriter = new FileWriter (filename, false);
 		    PrintWriter pWriter = new PrintWriter (fWriter);
 		    pWriter.println (stringToWrite);		   
 		    pWriter.close();

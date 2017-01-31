@@ -12,13 +12,24 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
 import org.json.*;
 
+/**
+ * The JsonBuilder class is used for creating JSON format of Stack and Heap
+ */
 public class JsonBuilder {
+	
 	private JSONObject json;
 	
+	/**
+	 * The constructor
+	 */
 	public JsonBuilder() {
 		this.json = new JSONObject();
 	}
 	
+	/*
+	 * This method adds information about stack and heap at specific time
+	 * and returns updated JSON
+	 */
 	public JSONObject getJson(IStackFrame[] frames) throws DebugException {		
 		Stack stack = new Stack(frames) ;
 		Heap heap = new Heap(stack);
@@ -32,6 +43,9 @@ public class JsonBuilder {
 		return json;
 	}
 	
+	/*
+	 * Returns Map list with heap information: all objects in the heap
+	 */
 	private Map<String, Object> getHeapMap(Heap heap) throws DebugException {
 		ArrayList<IVariable> vars = heap.getHeap();
 		Map<String, Object> varsMap = new HashMap<String, Object>();
@@ -42,6 +56,10 @@ public class JsonBuilder {
 		return heapMap;		
 	}
 	
+	/*
+	 * Returns Map list with stack information: all stack frames, 
+	 * stack frame number and variables at each stack frame
+	 */
 	private Map<String, Object> getStackMap(Stack stack) throws DebugException {
 		IStackFrame[] frames = stack.getStackFrames();
 
@@ -61,6 +79,9 @@ public class JsonBuilder {
 		return stackMap;		
 	}
 	
+	/*
+	 * Returns data string format of current time and date
+	 */
 	private static String getDateTime() {
 		Date date = new Date();
 		SimpleDateFormat dateFormated = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss:SSS");

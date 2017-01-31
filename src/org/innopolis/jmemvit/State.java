@@ -5,11 +5,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * The State class storing the information about time and actual stack and heap at that time
+ */
 public class State implements Comparable<Object>{
+	
 	private String date;	
 	private StackStrings stack;
 	private HeapStrings heap;
 		
+	/**
+	 * The constructor
+	 */
 	public State(String date, StackStrings stack, HeapStrings heap) {
 		this.date = date;
 		this.stack = stack;
@@ -40,6 +47,9 @@ public class State implements Comparable<Object>{
 		this.date = date;
 	}
 
+	/*
+	 * States are compared by date and time
+	 */
 	@Override
 	public int compareTo(Object o) {
 		int comparison = 0;		
@@ -60,6 +70,9 @@ public class State implements Comparable<Object>{
 		return comparison;
 	}
 	
+	/*
+	 * Convert String date format into Date format
+	 */
 	private static Date getDateTime(String dateString) throws ParseException {		
 		SimpleDateFormat dateFormated = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss:SSS");
 		Date date = dateFormated.parse(dateString);

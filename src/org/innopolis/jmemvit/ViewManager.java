@@ -15,10 +15,12 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
 import org.json.JSONObject;
 
-
+/**
+ * The ViewManager class controls graphical interface of the program
+ */
 public class ViewManager extends ViewPart {
 
-	private DebugEventListener jdiEventListener = null;
+	private DebugEventListener jdiEventListener;
 	private Tree tree;
 	private JsonBuilder jsonBuilder = new JsonBuilder();
 	
@@ -116,7 +118,7 @@ public class ViewManager extends ViewPart {
 	/* 
 	 * This method returns top stack frame of current thread
 	 */
-	private IStackFrame getActualTopStackFrame() {
+	private IStackFrame getActualTopStackFrame() throws DebugException {
 		// Get current thread to extract data
 		IJavaThread currentThread = jdiEventListener.getCurrentThread();
 		Stack stack = new Stack(currentThread);

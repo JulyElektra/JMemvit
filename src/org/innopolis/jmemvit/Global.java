@@ -1,6 +1,10 @@
 package org.innopolis.jmemvit;
 
+/**
+ * The Global class is consists of text constants
+ */
 public final class Global {
+	
 	public static final String STACK = "Stack";
 	public static final String HEAP = "Heap";
 	public static final String NAME = "name";

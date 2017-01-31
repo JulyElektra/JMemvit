@@ -7,12 +7,23 @@ import java.io.PrintWriter;
 
 import javax.swing.JOptionPane;
 
+/**
+ * The MyFileWriter class helps to write data in the file
+ */
 public class MyFileWriter {
+	
 	private static File filename = new File ("/home/yuliya/Thesis/Eclipse Project/JMemvit/src/org/innopolis/jmemvit/output.txt");
+	
+	/**
+	 * The constructor
+	 */
 	public MyFileWriter(String filePath) {
 		filename = new File(filePath);
 	}
 	
+	/*
+	 * Method writes string to file
+	 */
 	public static void write(String stringToWrite){
 		try {
 		    FileWriter fWriter = new FileWriter (filename, false);

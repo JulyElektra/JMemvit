@@ -8,17 +8,28 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 
+/**
+ * The Variable class stores information about variables 
+ * and does some operation with variables
+ */
 public class Variable {
+	
 	private String name;
 	private String type;
 	private String value;
 	
+	/**
+	 * The constructor
+	 */
 	public Variable(String name, String type, String value) {
 		this.name = name;
 		this.type = type;
 		this.value = value;
 	}
 
+	/*
+	 * Convert variable type into strings for the array of objects
+	 */
 	// TODO refactoring
 	public static ArrayList<String> toStrings (Object[] vars) throws DebugException{
 		ArrayList<String> varStrings = new ArrayList<>();
@@ -46,6 +57,9 @@ public class Variable {
 		return varStrings;			
 	}
 	
+	/*
+	 * Checks if variable is object type or not
+	 */
 	public static boolean isObjectType(IVariable var) throws DebugException {
 		String varType = var.getReferenceTypeName();
 		if ((varType.equals("byte")) || 
@@ -63,8 +77,10 @@ public class Variable {
 		return true;
 	}
 	
+	/*
+	 * Convert list of variables into list of each variable data in MAP: name, type, value
+	 */
 	public static ArrayList<Map<String, String>> getVarsList (ArrayList<IVariable> vars) throws DebugException {
-		
 		ArrayList<Map<String, String>> varsList = new ArrayList<Map<String, String>>();
 		for (IVariable var: vars) {
 			Map<String, String> varMap = new HashMap<String, String>();

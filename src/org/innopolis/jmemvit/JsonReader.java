@@ -37,63 +37,141 @@ public class JsonReader {
 		JSONArray vars = (JSONArray)((JSONObject) jsonObj.get(key)).get(Global.VARIABLES);
 		for (Object varObj: vars){
 			JSONObject varJSObj = (JSONObject) varObj;
-			String name = (String) varJSObj.get(Global.NAME);
-			String type = (String) varJSObj.get(Global.TYPE);
-			String value = (String) varJSObj.get(Global.VALUE);
-			Variable var = new Variable(name,  type, value);
+			Variable var = getVariable(varJSObj);			
 			varsList.add(var);
-			return varsList;
 		}
-		return null;		
+		return varsList;		
 	}
 	
+	/*
+	 * This Method gets name, type and value from JSONObject 
+	 * and creates variable with these data
+	 */
+	private Variable getVariable(JSONObject varJSObj) {
+		String name = (String) varJSObj.get(Global.NAME);
+		String type = (String) varJSObj.get(Global.TYPE);
+		String value = (String) varJSObj.get(Global.VALUE);
+		Variable var = new Variable(name,  type, value);
+		return var;
+	}
+
 	/*
 	 * Returns list with all states of the debugging program (time, heap, stack) 
 	 * extracted from the JSON
 	 */
 	public ArrayList<State> read() throws ParseException {
-		
-		Set<String> times =  json.keySet();		
-		ArrayList<String> timesStringList = new ArrayList<String>(times);
-		ArrayList<Date> timeList = new ArrayList<Date>();
-		for (String time: timesStringList) {
-			Date dateTime = getDateTime(time);
-			timeList.add(dateTime);
+		ArrayList<String> timeList = getSortedTimeList();
+		for (String time: timeList) {
+			State state = getState(time);
+			listOfStates.add(state);
 		}
-		Collections.sort(timeList);
-		for (Date date: timeList) {
-			String dateString = getDateTime(date);
-			JSONObject heapAndStack = (JSONObject)((JSONArray) json.get(dateString)).get(0);
-
-			
-			ArrayList<Variable> heapVars = getVars ((JSONObject) heapAndStack, Global.HEAP);
-
-			
-			JSONObject stackJSObj = (JSONObject) heapAndStack.get(Global.STACK);
-			Set<String> stackFramesStrings = stackJSObj.keySet();
-			Map<Integer, String> stackFramesMap = new HashMap<Integer, String>();
-			for (String fr: stackFramesStrings) {
-				String[] s = fr.split(" ");
-				stackFramesMap.put(Integer.parseInt(s[0]), s[1]);
-			}
-			ArrayList<StackFrame> stackFrames = new ArrayList<StackFrame>();
-			for (Entry<Integer, String> entry: stackFramesMap.entrySet()) {
-				int stackFrNumber = entry.getKey();
-				String stackFrName = entry.getValue();
-				String stackFrameString = stackFrNumber + " " + stackFrName;
-				ArrayList<Variable> stackFrameVars = getVars ((JSONObject) stackJSObj, stackFrameString);
-				StackFrame stackFrame = new StackFrame(stackFrNumber, stackFrName, stackFrameVars);
-				stackFrames.add(stackFrame);
-			}
-			StackStrings stack = new StackStrings(stackFrames);
-			HeapStrings heap = new HeapStrings(heapVars);
-			State state = new State(dateString, stack, heap);
-			listOfStates.add(state);		
-		}
-		
 		return listOfStates;
 	}
 	
+	/*
+	 * The method gets gets stack and heap data and returns a state
+	 */
+	private State getState(String time) {
+		JSONObject heapAndStack = (JSONObject)((JSONArray) json.get(time)).get(0);
+		StackStrings stack = getStack(time, heapAndStack);
+		HeapStrings heap = getHeap(time, heapAndStack);
+		State state = new State(time, stack, heap);
+		return state;
+	}
+
+	/*
+	 * This method returns a heap from JSON
+	 */
+	private HeapStrings getHeap(String time, JSONObject heapAndStack) {				
+		ArrayList<Variable> heapVars = getVars ((JSONObject) heapAndStack, Global.HEAP);
+		HeapStrings heap = new HeapStrings(heapVars);
+		return heap;
+	}
+
+	/*
+	 * This method returns a stack from JSON
+	 */
+	private StackStrings getStack(String time, JSONObject heapAndStack) {
+		JSONObject stackJSObj = (JSONObject) heapAndStack.get(Global.STACK);
+		ArrayList<StackFrame> stackFrames = getStackFrames(stackJSObj);
+		StackStrings stack = new StackStrings(stackFrames);
+		return stack;
+	}
+
+	/*
+	 * This method returns stack frames from JSON
+	 */
+	private ArrayList<StackFrame> getStackFrames(JSONObject stackJSObj) {
+		Map<Integer, String> stackFramesMap  = getStackFramesMap(stackJSObj);		
+		ArrayList<StackFrame> stackFrames = new ArrayList<StackFrame>();
+		for (Entry<Integer, String> entry: stackFramesMap.entrySet()) {
+			int stackFrNumber = entry.getKey();
+			String stackFrName = entry.getValue();
+			String stackFrameString = stackFrNumber + " " + stackFrName;
+			ArrayList<Variable> stackFrameVars = getVars ((JSONObject) stackJSObj, stackFrameString);			
+			StackFrame stackFrame = new StackFrame(stackFrNumber, stackFrName, stackFrameVars);
+			stackFrames.add(stackFrame);
+		}
+		return stackFrames;
+	}
+
+	/*
+	 * This method gets Map with stack frame number and name from JSON
+	 */
+	private Map<Integer, String> getStackFramesMap(JSONObject stackJSObj) {
+		Set<String> stackFramesStrings = stackJSObj.keySet();
+		Map<Integer, String> stackFramesMap = new HashMap<Integer, String>();
+		for (String fr: stackFramesStrings) {
+			String[] s = fr.split(" ");
+			stackFramesMap.put(Integer.parseInt(s[0]), s[1]);
+		}
+		return stackFramesMap;
+	}
+
+	/*
+	 * The method gets sorted ArrayList of date and time
+	 */
+	private ArrayList<String> getSortedTimeList() throws ParseException {
+		Set<String> times =  json.keySet();		
+		ArrayList<String> timesList = new ArrayList<String>(times);
+		ArrayList<String> sortedTimesList = sortByTime(timesList);	
+		return sortedTimesList;
+	}
+
+	/*
+	 * Sorting the ArrayList of Strings by date and time
+	 */
+	private ArrayList<String> sortByTime(ArrayList<String> stringsTimesList) throws ParseException {
+		ArrayList<Date> dateTimeList = convertStringsToDates(stringsTimesList);
+		Collections.sort(dateTimeList);
+		ArrayList<String> resultList = convertDatesToStrings(dateTimeList);		
+		return resultList;
+	}
+
+	/*
+	 * Convert String date format into date format in ArrayLists
+	 */
+	private ArrayList<String> convertDatesToStrings(ArrayList<Date> datesList) {
+		ArrayList<String> stringList = new ArrayList<String>();
+		for (Date date: datesList) {
+			String stringDate = getDateTime(date);
+			stringList.add(stringDate);
+		}
+		return stringList;
+	}
+
+	/*
+	 * Convert Date format into string date format in ArrayLists
+	 */
+	private ArrayList<Date> convertStringsToDates(ArrayList<String> stringList) throws ParseException {
+		ArrayList<Date> datesList = new ArrayList<Date>();
+		for (String stringDate: stringList) {
+			Date date = getDateTime(stringDate);
+			datesList.add(date);
+		}
+		return datesList;
+	}
+
 	/*
 	 * Convert String date format into Date format
 	 */

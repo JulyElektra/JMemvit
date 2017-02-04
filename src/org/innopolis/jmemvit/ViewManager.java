@@ -1,5 +1,6 @@
 package org.innopolis.jmemvit;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.eclipse.debug.core.DebugException;
@@ -7,11 +8,9 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.part.ViewPart;
 import org.json.JSONObject;
 
@@ -21,13 +20,16 @@ import org.json.JSONObject;
 public class ViewManager extends ViewPart {
 
 	private DebugEventListener jdiEventListener;
-	private Tree tree;
+	private Browser browser;
 	private JsonBuilder jsonBuilder = new JsonBuilder();
 	
-	class RunnableForThread2 implements Runnable{
+	class RunnableForThread implements Runnable{
 		public void run() {
 			while (true) {
-				try { Thread.sleep(1000); } catch (Exception e) { }
+				try { 
+					Thread.sleep(1000); 
+				} catch (Exception e) { 
+				}
 				Runnable task = () -> { 
 					try {
 						vizualizateView();
@@ -42,22 +44,16 @@ public class ViewManager extends ViewPart {
 	
 	@Override
 	public void createPartControl(Composite parent) {
-		tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		tree.setHeaderVisible(true);
-		tree.setLinesVisible(true);		
-		tree.setVisible(true);
 		
-		TreeColumn columnName = new TreeColumn(tree, SWT.LEFT);
-		columnName.setText("");
-		columnName.setWidth(300);
+		browser = new Browser(parent, SWT.NONE);
+		browser.setText("<html><body>Stack and heap will appear here.Please, start debugging.</body></html>");
 		
 		jdiEventListener = new DebugEventListener();
-		DebugPlugin.getDefault().addDebugEventListener(jdiEventListener);
+		DebugPlugin.getDefault().addDebugEventListener(jdiEventListener);		
 		
-		
-		Runnable runnable = new RunnableForThread2();
-		Thread thread2 = new Thread(runnable);
-		thread2.start();	
+		Runnable runnable = new RunnableForThread();
+		Thread thread = new Thread(runnable);
+		thread.start();	
 	}
 	
 
@@ -72,24 +68,27 @@ public class ViewManager extends ViewPart {
 			
 		// Check if there is any updates
 		if (hasEventUpdates()) {			
-			for (TreeItem item : tree.getItems()){
-				item.dispose();
-			}			
-			
-			IStackFrame topFrame = getActualTopStackFrame();
+			//IStackFrame topFrame = getActualTopStackFrame();
 			IStackFrame[] frames = getActualStackFrames();
-			Stack stack = new Stack(frames);
-			Heap heap = new Heap(stack);
+			
+			//Stack stack = new Stack(frames);
+			//Heap heap = new Heap(stack);
 			
 			// Visualization
-			//TODO visualize all frames, not only TOP
-			ArrayList<String> stackStrings = stack.getStackFrameStrings(topFrame);
-			visualize(stackStrings);
 			
-			ArrayList<String> heapStrings = heap.getHeapStrings();		
-			visualize(heapStrings);
+			//TODO visualize all frames, not only TOP
+			//ArrayList<String> stackStrings = stack.getStackFrameStrings(topFrame);
+			//visualize(stackStrings);
+			
+			//ArrayList<String> heapStrings = heap.getHeapStrings();		
+			//visualize(heapStrings);
 			
 			JSONObject json = jsonBuilder.getJson(frames);
+			State currentState = getCurrentState(json);
+			String currentStateHTML = getStateHTML(currentState);
+			visualize(currentStateHTML);
+			
+			// TODO delete in the final version
 			String jsonString = json.toString();
 			MyFileWriter.write(jsonString);
 		}
@@ -100,14 +99,34 @@ public class ViewManager extends ViewPart {
 	}
 
 	/*
+	 * Method gets HTML string from the state
+	 */	
+	private String getStateHTML(State state) {
+		HtmlBuilder htmlBuilder = new HtmlBuilder(state);		
+		return htmlBuilder.getHtmlString();
+	}
+
+	/*
+	 * Method gets the last (current) state of stack and heap from JSON
+	 */
+	private State getCurrentState(JSONObject json) {
+		JsonReader jsonReader = new JsonReader(json);
+		try {
+			ArrayList<State> states = jsonReader.read();
+			int current = states.size() - 1;
+			return states.get(current);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}		
+		return null;
+	}
+
+	/*
 	 * Method visualizes particular element
 	 */
-	private void visualize(ArrayList<String> stringsToVisualize) {
-		if (stringsToVisualize != null) {
-			for (String stringToVisualize: stringsToVisualize){
-				TreeItem item = new TreeItem(tree, SWT.LEFT);
-				item.setText(0, stringToVisualize);
-			}			
+	private void visualize(String htmlString) {
+		if (htmlString != null) {
+			browser.setText(htmlString);
 		}
 		else {
 			// String is null
@@ -154,9 +173,7 @@ public class ViewManager extends ViewPart {
 		else {
 			// There is no events or there is not changers in event
 			return false;
-		}
-		
-	}
-	
+		}		
+	}	
 	
 }

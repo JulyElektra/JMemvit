@@ -11,7 +11,5 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="/home/yuliya/Thesis/Eclipse Project/JMemvit/lib/json-20160810.jar"/>
-	<classpathentry exported="true" kind="lib" path="/home/yuliya/Thesis/Eclipse Project/JMemvit/lib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

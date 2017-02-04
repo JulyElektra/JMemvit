@@ -26,11 +26,33 @@ public class Variable {
 		this.type = type;
 		this.value = value;
 	}
+	
+	/**
+	 * The constructor
+	 */
+	public Variable(Map<String, Object> varData) {
+		this.name = (String) varData.get(Global.NAME);
+		this.type = (String) varData.get(Global.TYPE);
+		this.value = (String) varData.get(Global.VALUE);
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
 
 	/*
 	 * Convert variable type into strings for the array of objects
 	 */
-	// TODO refactoring
+	// TODO delete
 	public static ArrayList<String> toStrings (Object[] vars) throws DebugException{
 		ArrayList<String> varStrings = new ArrayList<>();
 		for (Object varObj: vars){
@@ -38,7 +60,8 @@ public class Variable {
 			IValue varValue = var.getValue();
 			String varName = var.getName();
 			String varRef = var.getReferenceTypeName();
-			varStrings.add(varName + " = " + varValue.toString() + "; " + Global.TYPE + ": " + varRef);
+			varStrings.add(varName + " = " + varValue.toString() + 
+					"; " + Global.TYPE + ": " + varRef);
 			if (!varRef.contains(".") || varRef.contains("[]")) {
 				if (varValue.hasVariables()) {
 					IVariable[] subVariables = varValue.getVariables();

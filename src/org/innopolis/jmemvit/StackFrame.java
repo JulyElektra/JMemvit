@@ -18,5 +18,17 @@ public class StackFrame {
 		this.number = number;
 		this.name = name;
 		this.vars = vars;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public ArrayList<Variable> getVars() {
+		return vars;
 	}	
 }

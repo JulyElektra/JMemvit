@@ -72,7 +72,10 @@ public class JsonReader {
 	 * The method gets gets stack and heap data and returns a state
 	 */
 	private State getState(String time) {
-		JSONObject heapAndStack = (JSONObject)((JSONArray) json.get(time)).get(0);
+		String jsonString = json.toString();
+		JSONObject jObj = new JSONObject(jsonString);
+		JSONArray jArr = (JSONArray)jObj.get(time);
+		JSONObject heapAndStack = (JSONObject) jArr.get(0);
 		StackStrings stack = getStack(time, heapAndStack);
 		HeapStrings heap = getHeap(time, heapAndStack);
 		State state = new State(time, stack, heap);

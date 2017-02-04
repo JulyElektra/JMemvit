@@ -12,7 +12,8 @@ import javax.swing.JOptionPane;
  */
 public class MyFileWriter {
 	
-	private static File filename = new File ("/home/yuliya/Thesis/Eclipse Project/JMemvit/src/org/innopolis/jmemvit/output.txt");
+	private static File filename = new File (
+			"C:/WorkSpaces/Eclipse luna/luna projects/JMemvit/src/org/innopolis/jmemvit/output.txt");
 	
 	/**
 	 * The constructor

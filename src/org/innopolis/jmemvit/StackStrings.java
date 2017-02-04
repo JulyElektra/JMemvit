@@ -16,6 +16,10 @@ public class StackStrings {
 	public StackStrings(ArrayList<StackFrame> stackFrames) {
 		this.stackFrames = stackFrames;
 	}
+
+	public ArrayList<StackFrame> getStackFrames() {
+		return stackFrames;
+	}
 }
 
 

@@ -13,6 +13,7 @@
       <view
             allowMultiple="false"
             class="org.innopolis.jmemvit.ViewManager"
+            icon="icons/sample.gif"
             id="JMemvit.view1"
             name="JMemvit"
             restorable="true">

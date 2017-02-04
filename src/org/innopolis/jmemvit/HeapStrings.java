@@ -16,4 +16,8 @@ public class HeapStrings {
 	public HeapStrings(ArrayList<Variable> vars) {
 		this.vars = vars;
 	}
+
+	public ArrayList<Variable> getVariables() {
+		return vars;
+	}
 }

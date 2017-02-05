@@ -1,7 +1,5 @@
 package org.innopolis.jmemvit;
 
-import java.util.ArrayList;
-
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
@@ -81,43 +79,6 @@ public class Stack {
 		return vars;
 	}
 	
-	/*
-	 * This method returns array of strings, that consists data from
-	 * stack frame. Result will be used for visualization of stack data
-	 */
-	public ArrayList<String> getStackFrameStrings(IStackFrame frame) throws DebugException {
-	
-		// If stack frame is not empty
-		if (frame != null){
-						
-			// Get name of the stack item
-			String frameName = getStackFrameName(frame);
-			
-			// Get line number of the stack item
-			int lineNumber = getStackFrameLineNumber(frame);
-			
-			ArrayList<String> stackStrings = new ArrayList<>();
-			stackStrings.add(Global.STACK + " number of vars: " + getStackFrameVariables(frame).length);
-			
-			// Add frame name and line number to the array
-			stackStrings.add(Global.PROGRAM_COUNTER + ": " + frameName + " " + lineNumber);
-			
-			// Get Variables of the stack item
-			IVariable[] vars = getStackFrameVariables(frame);
-			ArrayList<String> varStrings = Variable.toStrings(vars);
-			
-			// Add variables to the array
-			for (String varString: varStrings){
-				stackStrings.add(varString);
-			}
-			
-			return stackStrings;
-		}
-		else {
-			// Stack frame is empty
-			return null;
-		}
-	}
 
 	/*
 	 * This method derives stack frames from the thread and

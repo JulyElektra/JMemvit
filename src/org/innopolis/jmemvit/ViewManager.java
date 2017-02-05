@@ -68,24 +68,18 @@ public class ViewManager extends ViewPart {
 			
 		// Check if there is any updates
 		if (hasEventUpdates()) {			
-			//IStackFrame topFrame = getActualTopStackFrame();
 			IStackFrame[] frames = getActualStackFrames();
 			
-			//Stack stack = new Stack(frames);
-			//Heap heap = new Heap(stack);
+			// Writing data in JSON
+			JSONObject json = jsonBuilder.getJson(frames);
+			
+			// Reading from JSON information about the current state
+			State currentState = getCurrentState(json);
+			
+			// Building HTML format string with data
+			String currentStateHTML = getStateHTML(currentState);
 			
 			// Visualization
-			
-			//TODO visualize all frames, not only TOP
-			//ArrayList<String> stackStrings = stack.getStackFrameStrings(topFrame);
-			//visualize(stackStrings);
-			
-			//ArrayList<String> heapStrings = heap.getHeapStrings();		
-			//visualize(heapStrings);
-			
-			JSONObject json = jsonBuilder.getJson(frames);
-			State currentState = getCurrentState(json);
-			String currentStateHTML = getStateHTML(currentState);
 			visualize(currentStateHTML);
 			
 			// TODO delete in the final version

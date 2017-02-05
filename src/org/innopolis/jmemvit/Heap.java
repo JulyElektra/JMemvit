@@ -36,18 +36,6 @@ public class Heap {
 	}
 	
 	/*
-	 * This method method returns all objects of the heap into array of strings
-	 */
-	public ArrayList<String> getHeapStrings() throws DebugException {
-		ArrayList<IVariable> heap = getHeap();
-		ArrayList<String> heapStrings = Variable.toStrings(heap.toArray());
-		if (heapStrings != null && heapStrings.size() != 0) {
-			heapStrings.add(0, Global.HEAP);				
-		}
-		return heapStrings;
-	}
-	
-	/*
 	 * This method finds all objects in the stack frame
 	 */
 	private ArrayList<IVariable> findObjects(IStackFrame frame) throws DebugException {

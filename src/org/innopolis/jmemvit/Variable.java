@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 
 /**
@@ -48,38 +47,6 @@ public class Variable {
 		return value;
 	}
 
-
-	/*
-	 * Convert variable type into strings for the array of objects
-	 */
-	// TODO delete
-	public static ArrayList<String> toStrings (Object[] vars) throws DebugException{
-		ArrayList<String> varStrings = new ArrayList<>();
-		for (Object varObj: vars){
-			IVariable var = (IVariable) varObj;
-			IValue varValue = var.getValue();
-			String varName = var.getName();
-			String varRef = var.getReferenceTypeName();
-			varStrings.add(varName + " = " + varValue.toString() + 
-					"; " + Global.TYPE + ": " + varRef);
-			if (!varRef.contains(".") || varRef.contains("[]")) {
-				if (varValue.hasVariables()) {
-					IVariable[] subVariables = varValue.getVariables();
-					for (IVariable subVaraible: subVariables) {
-						IValue subVarValue = subVaraible.getValue();
-						String subVarName = subVaraible.getName();
-						String subVarRef = subVaraible.getReferenceTypeName();
-						varStrings.add("      " + subVarName + 
-								" = " + subVarValue.toString() + 
-								"; " + Global.TYPE + ": " + subVarRef);
-					}
-				}
-			}
-				
-		}
-		return varStrings;			
-	}
-	
 	/*
 	 * Checks if variable is object type or not
 	 */

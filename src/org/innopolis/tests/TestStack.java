@@ -24,5 +24,7 @@ public class TestStack {
 		IStackFrame frame = stack.getTopStackFrame();
 		stack.getStackFrames();
 		stack.getStackFrameLineNumber(null);
+		stack.getStackFrameVariables(null);
+		stack.getStackFrameName(null);
 	}
 }

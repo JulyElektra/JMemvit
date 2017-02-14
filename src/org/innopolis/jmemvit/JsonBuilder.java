@@ -26,6 +26,12 @@ public class JsonBuilder {
 		this.json = new JSONObject();
 	}
 	
+	
+	public JSONObject getJson() {
+		return json;
+	}
+
+
 	/*
 	 * This method adds information about stack and heap at specific time
 	 * and returns updated JSON

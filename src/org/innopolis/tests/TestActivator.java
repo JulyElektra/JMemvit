@@ -11,9 +11,9 @@ public class TestActivator {
 	@Test
 	public void testInit() throws Exception {
 		Activator act = new Activator();
-		act.stop(new MockBundleContext());
+		/*act.stop(new MockBundleContext());
 		act.start(new MockBundleContext());
-		Activator.getDefault();
+		Activator.getDefault();*/
 		//act.getImageDescriptor(path);
 	}
 }

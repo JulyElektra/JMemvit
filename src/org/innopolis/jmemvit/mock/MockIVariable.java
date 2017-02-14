@@ -91,6 +91,15 @@ public class MockIVariable implements IVariable{
 			int k = n - 1;
 			return "type" + k;
 		}
+		if (n % 5 == 0 ) {
+			return "int";
+		}		
+		if (n % 4 == 0 ) {
+			return "short";
+		}
+		if (n % 2 == 0 ) {
+			return "byte";
+		}
 		return "type" + n;
 	}
 

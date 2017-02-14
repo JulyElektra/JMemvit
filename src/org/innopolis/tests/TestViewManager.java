@@ -13,6 +13,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.innopolis.jmemvit.DebugEventListener;
 import org.innopolis.jmemvit.ViewManager;
 import org.innopolis.jmemvit.mock.MockIJavaThread;
@@ -29,11 +31,19 @@ public class TestViewManager {
 		DebugEvent[] events1 = {event, event, event2};
 		listener.handleDebugEvents(events1);
 
+		Display display = new Display();
+		Shell shell = new Shell(display);
+		Browser browser = new Browser(shell, SWT.NONE);
 		
-		ViewManager view = new ViewManager(listener);
-		view.vizualizateView();
+		ViewManager view = new ViewManager(listener, browser);
+		
+		//view.vizualizateView();
 		DebugEvent[] events2 = {event, event, event2, event2};
 		listener.handleDebugEvents(events2);
-		
+		//view.createPartControl(shell);
+		view.vizualizateView();
+		view.vizualizateView();
+		view.setFocus();
+		ViewManager view2 = new ViewManager();
 	}
 }

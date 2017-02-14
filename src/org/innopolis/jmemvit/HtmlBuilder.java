@@ -78,7 +78,8 @@ public class HtmlBuilder {
 	 */
 	private String getStackHtml(StackStrings stack) {
 		String stackFramesHtml = getStackFramesHtml(stack);
-		String stackHtml = stackHeader +  getButtonsHtml() + stackFramesHtml;
+		//String stackHtml = stackHeader +  getButtonsHtml() + stackFramesHtml;
+		String stackHtml = stackHeader +  stackFramesHtml;
 		return stackHtml;
 	}
 	

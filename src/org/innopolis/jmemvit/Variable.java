@@ -29,11 +29,11 @@ public class Variable {
 	/**
 	 * The constructor
 	 */
-	public Variable(Map<String, Object> varData) {
+	/*public Variable(Map<String, Object> varData) {
 		this.name = (String) varData.get(Global.NAME);
 		this.type = (String) varData.get(Global.TYPE);
 		this.value = (String) varData.get(Global.VALUE);
-	}
+	}*/
 
 	public String getName() {
 		return name;

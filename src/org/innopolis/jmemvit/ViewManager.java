@@ -1,6 +1,5 @@
 package org.innopolis.jmemvit;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.eclipse.debug.core.DebugException;
@@ -9,18 +8,8 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.LocationEvent;
-import org.eclipse.swt.browser.LocationListener;
-import org.eclipse.swt.internal.win32.TBBUTTON;
-import org.eclipse.swt.internal.win32.TCHAR;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
 import org.innopolis.jmemvit.temporal.MyFileWriter;
 import org.json.JSONObject;
@@ -33,15 +22,26 @@ public class ViewManager extends ViewPart {
 	private DebugEventListener jdiEventListener;
 	private Browser browser;
 	private JsonBuilder jsonBuilder;
+	private State currentState;
+	private int currentStateNumber;
 	
 
-	public ViewManager(DebugEventListener jdiEventListener) {
-		this.jdiEventListener = jdiEventListener;
-		this.jsonBuilder = new JsonBuilder();
-	}
-
+	/**
+	 * The constructor
+	 */
 	public ViewManager() {
 		this.jsonBuilder = new JsonBuilder();
+		this.currentStateNumber = 1;
+	}
+	
+	/**
+	 * The constructor for JUnit Testing
+	 */
+	public ViewManager(DebugEventListener listener, Browser browser) {
+		this.jdiEventListener = listener;
+		this.jsonBuilder = new JsonBuilder();
+		this.browser = browser;
+		this.currentStateNumber = 1;
 	}
 
 	class RunnableForThread implements Runnable{
@@ -65,29 +65,77 @@ public class ViewManager extends ViewPart {
 	
 	@Override
 	public void createPartControl(Composite parent) {
-		System.out.println(parent.getClass().getSimpleName());
-		browser = new Browser(parent, SWT.NONE);
+		
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 1;
+		parent.setLayout(gridLayout);	
+		
+		Composite buttonsLayout = new Composite(parent, SWT.NONE);
+		
+		
+		RowLayout rowLayout = new RowLayout();
+	    rowLayout.wrap = false;
+	    rowLayout.pack = true;
+	    rowLayout.type = SWT.HORIZONTAL;
+	    buttonsLayout.setLayout(rowLayout);
+	    
+	    Button back = new Button(buttonsLayout, SWT.PUSH | SWT.TOP);
+	    back.setText("Back");
+	    back.setEnabled(true);
+		
+	    Button forward = new Button(buttonsLayout, SWT.PUSH | SWT.TOP);
+	    forward.setText("Forward");
+	    forward.setEnabled(true);
+
+	    
+	    browser = new Browser(parent, SWT.NONE);
+	    GridData gridData = new GridData();
+	    gridData.grabExcessHorizontalSpace = true;
+	    gridData.horizontalSpan = 100;
+	    gridData.verticalSpan = 100;
+	    gridData.horizontalAlignment = GridData.FILL;
+	    gridData.verticalAlignment = GridData.FILL;
+	    
+	    
+	    browser.setLayoutData(gridData);
+			    
 		browser.setText("<html><body>Stack and heap will appear here.Please, start debugging.</body></html>");
+
 		
-		/*Button button = new Button(parent, SWT.PUSH);
-		button.setText("Back");
-		button.setBounds(5, 5, 20, 40);
-		button.setLocation(5, 5);
-		button.setSize(20, 40);
-		button.setAlignment(SWT.LEFT);
-		button.*/
-		
-		
-		
+		back.addListener(SWT.Selection, new Listener() {
+	         public void handleEvent(Event event) {
+	         back();
+	         //System.out.println("I am here!!!!!!!!!!!!!!!!!!!!");
+	         }
+	      });
+	    forward.addListener(SWT.Selection, new Listener() {
+	         public void handleEvent(Event event) {
+	         forward();
+	         }
+	      });
+
 		
 		jdiEventListener = new DebugEventListener();
-		DebugPlugin.getDefault().addDebugEventListener(jdiEventListener);		
+		DebugPlugin debugPlugin = DebugPlugin.getDefault();
+		debugPlugin.addDebugEventListener(jdiEventListener);		
 		
 		Runnable runnable = new RunnableForThread();
 		Thread thread = new Thread(runnable);
 		thread.start();	
 	}
 	
+
+	protected void forward() {
+		if (currentStateNumber > 1) {
+			currentStateNumber--;
+		}
+		visualizeCurrentState(jsonBuilder.getJson());
+	}
+
+	protected void back() {
+		currentStateNumber++;
+		visualizeCurrentState(jsonBuilder.getJson());
+	}
 
 	@Override
 	public void setFocus() {
@@ -105,15 +153,9 @@ public class ViewManager extends ViewPart {
 			// Writing data in JSON
 			JSONObject json = jsonBuilder.addInJson(frames);
 			
-			// Reading from JSON information about the current state
-			State currentState = getCurrentState(json);
-			
-			// Building HTML format string with data
-			String currentStateHTML = getStateHTML(currentState);
-			
-			// Visualization
-			visualize(currentStateHTML);
-			
+			currentStateNumber = 1;
+			visualizeCurrentState(json);
+						
 			// TODO delete in the final version
 			String jsonString = json.toString();
 			MyFileWriter.write(jsonString);
@@ -122,6 +164,17 @@ public class ViewManager extends ViewPart {
 			// There is no updates or nothing
 			// to update in visualization
 		}
+	}
+
+	private void visualizeCurrentState(JSONObject json) {
+		// Reading from JSON information about the current state
+		currentState = getCurrentState(json);
+					
+		// Building HTML format string with data
+		String currentStateHTML = getStateHTML(currentState);
+					
+		// Visualization
+		visualize(currentStateHTML);		
 	}
 
 	/*
@@ -137,8 +190,11 @@ public class ViewManager extends ViewPart {
 	 */
 	private State getCurrentState(JSONObject json) {
 		JsonReader jsonReader = new JsonReader(json);
-		ArrayList<State> states = jsonReader.read();
-		int current = states.size() - 1;
+		ArrayList<State> states = jsonReader.read();		
+		int current = states.size() - currentStateNumber;
+		if (current < 0) {
+			currentStateNumber--;
+		}
 		return states.get(current);	
 	}
 
@@ -158,7 +214,7 @@ public class ViewManager extends ViewPart {
 	/* 
 	 * This method returns top stack frame of current thread
 	 */
-	private IStackFrame getActualTopStackFrame() throws DebugException {
+	/*private IStackFrame getActualTopStackFrame() throws DebugException {
 		// Get current thread to extract data
 		IJavaThread currentThread = jdiEventListener.getCurrentThread();
 		Stack stack = new Stack(currentThread);
@@ -166,7 +222,7 @@ public class ViewManager extends ViewPart {
 		// Get top stack frame
 		IStackFrame topFrame = stack.getTopStackFrame();
 		return topFrame;
-	}
+	}*/
 	
 	/* 
 	 * This method returns stack frames of current thread

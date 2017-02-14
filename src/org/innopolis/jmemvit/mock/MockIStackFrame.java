@@ -137,7 +137,7 @@ public class MockIStackFrame implements IStackFrame{
 
 	@Override
 	public IVariable[] getVariables() throws DebugException {
-		MockIVariable[] vars = {new MockIVariable(), new MockIVariable(),new MockIVariable(),new MockIVariable(),new MockIVariable(),new MockIVariable(),new MockIVariable()};
+		MockIVariable[] vars = {new MockIVariable(),new MockIVariable(),new MockIVariable(),new MockIVariable(), new MockIVariable(),new MockIVariable(),new MockIVariable(),new MockIVariable(),new MockIVariable(),new MockIVariable()};
 		return vars;
 	}
 
@@ -167,7 +167,9 @@ public class MockIStackFrame implements IStackFrame{
 
 	@Override
 	public String getName() throws DebugException {
-		
+		if (n % 2 == 0) {
+			return "<StackFrameName>" + n;
+		}
 		return "StackFrameName" + n;
 	}
 

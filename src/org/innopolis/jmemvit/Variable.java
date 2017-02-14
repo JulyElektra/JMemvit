@@ -50,8 +50,13 @@ public class Variable {
 	/*
 	 * Checks if variable is object type or not
 	 */
-	public static boolean isObjectType(IVariable var) throws DebugException {
-		String varType = var.getReferenceTypeName();
+	public static boolean isObjectType(IVariable var) {
+		String varType = "";
+		try {
+			varType = var.getReferenceTypeName();
+		} catch (DebugException e) {
+			e.printStackTrace();
+		}
 		if ((varType.equals("byte")) || 
 				(varType.equals("short")) || 
 				(varType.equals("int")) || 
@@ -70,17 +75,21 @@ public class Variable {
 	/*
 	 * Convert list of variables into list of each variable data in MAP: name, type, value
 	 */
-	public static ArrayList<Map<String, String>> getVarsList (ArrayList<IVariable> vars) throws DebugException {
+	public static ArrayList<Map<String, String>> getVarsList (ArrayList<IVariable> vars)  {
 		ArrayList<Map<String, String>> varsList = new ArrayList<Map<String, String>>();
 		for (IVariable var: vars) {
 			Map<String, String> varMap = new HashMap<String, String>();
-			String varName = var.getName().toString();
-			varMap.put(Global.NAME, varName);
-			String varValue = var.getValue().toString();
-			varMap.put(Global.VALUE, varValue);
-			String varType = var.getReferenceTypeName();
-			varMap.put(Global.TYPE, varType);				
-			varsList.add(varMap);
+			try {
+				String varName = var.getName().toString();
+				varMap.put(Global.NAME, varName);
+				String varValue = var.getValue().toString();
+				varMap.put(Global.VALUE, varValue);
+				String varType = var.getReferenceTypeName();
+				varMap.put(Global.TYPE, varType);				
+				varsList.add(varMap);
+			} catch (DebugException e){
+				e.printStackTrace();
+			}
 		}
 		return varsList;
 	}

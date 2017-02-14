@@ -2,6 +2,8 @@ package org.innopolis.jmemvit;
 
 import java.util.ArrayList;
 
+import org.eclipse.debug.core.model.IStackFrame;
+
 /**
  * The StackFrame class is used storing information about stack frames content
  */

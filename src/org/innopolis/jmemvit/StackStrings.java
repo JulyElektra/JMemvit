@@ -13,8 +13,16 @@ public class StackStrings {
 	/**
 	 * The constructor
 	 */
+	public StackStrings() {
+		this.stackFrames = new ArrayList<StackFrame>();
+	}
+	
 	public StackStrings(ArrayList<StackFrame> stackFrames) {
-		this.stackFrames = stackFrames;
+		if (stackFrames != null) {
+			this.stackFrames = stackFrames;
+		} else {
+			this.stackFrames = new ArrayList<StackFrame>();
+		}
 	}
 
 	public ArrayList<StackFrame> getStackFrames() {

@@ -53,18 +53,16 @@ public class State implements Comparable<Object>{
 	public int compareTo(Object o) {
 		int comparison = 0;		
 		if (o instanceof State) {
+			Date thisDate = getDateTime(date);
+			State os = (State) o;
+			Date anotherDate = getDateTime(os.getDate());	
+			comparison = thisDate.compareTo(anotherDate);
+		} else {
 			try {
-				Date thisDate = getDateTime(date);
-				State os = (State) o;
-				Date anotherDate = getDateTime(os.getDate());	
-				comparison = thisDate.compareTo(anotherDate);
-			}
-			catch (ParseException e) {
+			throw new TypeNotPresentException ("Different types to compare", null);
+			} catch (TypeNotPresentException e) {
 				e.printStackTrace();
 			}
-		}
-		else {
-			throw new TypeNotPresentException ("Different types to compare", null);
 		}
 		return comparison;
 	}
@@ -72,9 +70,15 @@ public class State implements Comparable<Object>{
 	/*
 	 * Convert String date format into Date format
 	 */
-	private static Date getDateTime(String dateString) throws ParseException {		
+	private static Date getDateTime(String dateString) {		
 		SimpleDateFormat dateFormated = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss:SSS");
-		Date date = dateFormated.parse(dateString);
+		Date date = null;
+		try {
+			date = dateFormated.parse("01.01.1990 00:00:00:000"); // the default value in case of wrong format of data
+			date = dateFormated.parse(dateString);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		return date;		
 	}
 }

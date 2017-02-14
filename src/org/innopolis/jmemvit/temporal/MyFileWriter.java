@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.temporal;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 public class MyFileWriter {
 	
 	private static File filename = new File (
-			"C:/WorkSpaces/Eclipse luna/luna projects/JMemvit/src/org/innopolis/jmemvit/output.txt");
+			"C:/WorkSpaces/Eclipse luna/luna projects/JMemvit/src/org/innopolis/jmemvit/temporal/output.txt");
 	
 	/**
 	 * The constructor

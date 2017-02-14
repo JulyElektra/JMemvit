@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -27,6 +28,21 @@ public class JsonReader {
 	public JsonReader(JSONObject json) {
 		this.json = json;
 		this.listOfStates = new ArrayList<State>();
+	}
+	
+	/*
+	 * Returns list with all states of the debugging program (time, heap, stack) 
+	 * extracted from the JSON
+	 */
+	public ArrayList<State> read() {
+		ArrayList<String> timeList = getSortedTimeList();
+		for (String time: timeList) {
+			State state = getState(time);
+			if (state != null) {
+				listOfStates.add(state);
+			}
+		}
+		return listOfStates;
 	}
 	
 	/*
@@ -55,31 +71,24 @@ public class JsonReader {
 		return var;
 	}
 
-	/*
-	 * Returns list with all states of the debugging program (time, heap, stack) 
-	 * extracted from the JSON
-	 */
-	public ArrayList<State> read() throws ParseException {
-		ArrayList<String> timeList = getSortedTimeList();
-		for (String time: timeList) {
-			State state = getState(time);
-			listOfStates.add(state);
-		}
-		return listOfStates;
-	}
-	
+
 	/*
 	 * The method gets gets stack and heap data and returns a state
 	 */
 	private State getState(String time) {
 		String jsonString = json.toString();
 		JSONObject jObj = new JSONObject(jsonString);
-		JSONArray jArr = (JSONArray)jObj.get(time);
-		JSONObject heapAndStack = (JSONObject) jArr.get(0);
-		StackStrings stack = getStack(time, heapAndStack);
-		HeapStrings heap = getHeap(time, heapAndStack);
-		State state = new State(time, stack, heap);
-		return state;
+		try {
+			JSONArray jArr = (JSONArray)jObj.get(time);
+			JSONObject heapAndStack = (JSONObject) jArr.get(0);
+			StackStrings stack = getStack(time, heapAndStack);
+			HeapStrings heap = getHeap(time, heapAndStack);
+			State state = new State(time, stack, heap);	
+			return state;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/*
@@ -134,7 +143,7 @@ public class JsonReader {
 	/*
 	 * The method gets sorted ArrayList of date and time
 	 */
-	private ArrayList<String> getSortedTimeList() throws ParseException {
+	private ArrayList<String> getSortedTimeList() {
 		Set<String> times =  json.keySet();		
 		ArrayList<String> timesList = new ArrayList<String>(times);
 		ArrayList<String> sortedTimesList = sortByTime(timesList);	
@@ -144,7 +153,7 @@ public class JsonReader {
 	/*
 	 * Sorting the ArrayList of Strings by date and time
 	 */
-	private ArrayList<String> sortByTime(ArrayList<String> stringsTimesList) throws ParseException {
+	private ArrayList<String> sortByTime(ArrayList<String> stringsTimesList) {
 		ArrayList<Date> dateTimeList = convertStringsToDates(stringsTimesList);
 		Collections.sort(dateTimeList);
 		ArrayList<String> resultList = convertDatesToStrings(dateTimeList);		
@@ -166,7 +175,7 @@ public class JsonReader {
 	/*
 	 * Convert Date format into string date format in ArrayLists
 	 */
-	private ArrayList<Date> convertStringsToDates(ArrayList<String> stringList) throws ParseException {
+	private ArrayList<Date> convertStringsToDates(ArrayList<String> stringList){
 		ArrayList<Date> datesList = new ArrayList<Date>();
 		for (String stringDate: stringList) {
 			Date date = getDateTime(stringDate);
@@ -178,9 +187,15 @@ public class JsonReader {
 	/*
 	 * Convert String date format into Date format
 	 */
-	private static Date getDateTime(String time) throws ParseException {
+	private static Date getDateTime(String time)  {
 		SimpleDateFormat dateFormated = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss:SSS");
-		Date date = dateFormated.parse(time);
+		Date date = null;
+		try {
+			date = dateFormated.parse("01.01.1990 00:00:00:000"); // the default value in case of wrong format of data
+			date = dateFormated.parse(time);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		return date;		
 	}
 	

@@ -12,10 +12,19 @@ public class HeapStrings {
 
 	/**
 	 * The constructor
-	 */
-	public HeapStrings(ArrayList<Variable> vars) {
-		this.vars = vars;
+	 */	
+	public HeapStrings() {
+		this.vars = new ArrayList<Variable>();
 	}
+	
+	public HeapStrings(ArrayList<Variable> vars) {
+		if (vars != null){
+			this.vars = vars;
+		} else {
+			this.vars = new ArrayList<Variable>();
+		}
+	}
+
 
 	public ArrayList<Variable> getVariables() {
 		return vars;

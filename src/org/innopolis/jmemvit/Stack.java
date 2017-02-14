@@ -49,10 +49,18 @@ public class Stack {
 	/*
 	 * Returns name of particular stack frame
 	 */
-	public String getStackFrameName(IStackFrame frame) throws DebugException{
+	public String getStackFrameName(IStackFrame frame) {
 		String frameName = "";
 		if (frame != null){
-			frameName = frame.getName();
+			try {
+				frameName = frame.getName();
+				if (frameName.contains("<") || frameName.contains(">")) {
+					frameName = frameName.replaceAll("<", "");
+					frameName = frameName.replaceAll(">", "");
+				}
+			} catch (DebugException e) {
+				e.printStackTrace();
+			}
 			}			
 		return frameName;
 	}
@@ -71,10 +79,14 @@ public class Stack {
 	/*
 	 * Returns array of variables of particular stack frame
 	 */
-	public IVariable[] getStackFrameVariables(IStackFrame frame) throws DebugException{
+	public IVariable[] getStackFrameVariables(IStackFrame frame){
 		IVariable[] vars = null;
 		if (frame != null){
-			vars = frame.getVariables();
+			try {
+				vars = frame.getVariables();
+			} catch (DebugException e) {
+				e.printStackTrace();
+			}
 			}	
 		return vars;
 	}
@@ -87,7 +99,10 @@ public class Stack {
 	private IStackFrame[] deriveStackFrames(IJavaThread thread){
 		if (thread == null){return null;}
 		IStackFrame[] frames = null;
-		try {frames = thread.getStackFrames();} catch (DebugException e) {}		
+		try {
+			frames = thread.getStackFrames();
+		} catch (DebugException e) {
+			}		
 		return frames;
 	}
 

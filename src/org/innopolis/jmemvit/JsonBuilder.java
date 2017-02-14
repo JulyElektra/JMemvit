@@ -30,7 +30,7 @@ public class JsonBuilder {
 	 * This method adds information about stack and heap at specific time
 	 * and returns updated JSON
 	 */
-	public JSONObject getJson(IStackFrame[] frames) throws DebugException {		
+	public JSONObject addInJson(IStackFrame[] frames){		
 		Stack stack = new Stack(frames) ;
 		Heap heap = new Heap(stack);
 		String date = getDateTime();
@@ -46,7 +46,7 @@ public class JsonBuilder {
 	/*
 	 * Returns Map list with heap information: all objects in the heap
 	 */
-	private Map<String, Object> getHeapMap(Heap heap) throws DebugException {
+	private Map<String, Object> getHeapMap(Heap heap) {
 		ArrayList<IVariable> vars = heap.getHeap();
 		Map<String, Object> varsMap = new HashMap<String, Object>();
 		ArrayList<Map<String, String>> varsList = Variable.getVarsList(vars);
@@ -60,13 +60,18 @@ public class JsonBuilder {
 	 * Returns Map list with stack information: all stack frames, 
 	 * stack frame number and variables at each stack frame
 	 */
-	private Map<String, Object> getStackMap(Stack stack) throws DebugException {
+	private Map<String, Object> getStackMap(Stack stack) {
 		IStackFrame[] frames = stack.getStackFrames();
 
 		Map<String, Object> frameMap = new HashMap<String, Object>();
 		for (int frameNum = 0; frameNum < frames.length; frameNum++) {
 			String frameName = stack.getStackFrameName(frames[frameNum]);
-			String frameCalssName = frames[frameNum].getVariables()[0].getReferenceTypeName().toString();
+			String frameCalssName = "";
+			try {
+				frameCalssName = frames[frameNum].getVariables()[0].getReferenceTypeName().toString();
+			} catch (DebugException e) {
+				e.printStackTrace();
+			}
 			IVariable[] vars = stack.getStackFrameVariables(frames[frameNum]);
 			ArrayList<IVariable> varsArrList = new ArrayList<IVariable>(Arrays.asList(vars));
 			Map<String, Object> varsMap = new HashMap<String, Object>();

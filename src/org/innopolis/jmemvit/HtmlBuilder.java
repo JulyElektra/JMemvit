@@ -4,6 +4,11 @@ import java.util.ArrayList;
 
 public class HtmlBuilder {
 	private State state;
+	private static final String space = "&nbsp;";
+	private static final String separator = "<p>";
+	private static final String buttonTemplate = "<a class=\"button\" href=\"#\">%s</a>"
+			+ "<style type=\"text/css\">.button {display: inline-block;text-align: center; vertical-align: middle;  padding: 12px 24px;	    border: 1px solid #273ba1;border-radius: 8px;background: #534aff;    background: -webkit-gradient(linear, left top, left bottom, from(#534aff), to(#394dde));	    background: -moz-linear-gradient(top, #534aff, #394dde);	    background: linear-gradient(to bottom, #534aff, #394dde);	    text-shadow: #591717 1px 1px 1px;	    font: normal normal bold 16px verdana;	    color: #ffffff;	    text-decoration: none;	}	.button:hover,	.button:focus {	    border: 1px solid #3e5eff;	    background: #6459ff;	    background: -webkit-gradient(linear, left top, left bottom, from(#6459ff), to(#445cff));	    background: -moz-linear-gradient(top, #6459ff, #445cff);	    background: linear-gradient(to bottom, #6459ff, #445cff);	    color: #ffffff;	    text-decoration: none;	}	.button:active {	    background: #322c99;	    background: -webkit-gradient(linear, left top, left bottom, from(#322c99), to(#394dde));	    background: -moz-linear-gradient(top, #322c99, #394dde);	    background: linear-gradient(to bottom, #322c99, #394dde);	}</style>";
+
 	private static final String heapHeader = "</div><div class=\"heap\"><b>Heap:</b>";
 	private static final String stackHeader = "<html><head><title>Stack</title><style type=\"text/css\">" + "body{background-color: white;}*{font-family: monospace; font-size:10pt;}div.ar{background-color: #FDF1FA; padding: 6px; margin-bottom: 12px; border: 1px solid #bbb;}div.ar_title{font-size: small; color: #669999;}.ar_info, .ar_info td{border: 1px solid #FDF1FA; border-collapse: collapse; padding: 4px;}.ar_vars, .ar_vars td{border: 1px solid #ccc; border-collapse: collapse; padding: 6px;}.ar_info .n, .ar_vars .title td{font-size: 10pt; color: #669999;}.ar_info{font-size: small; border-color: #FDF1FA;}.gr{color: grey; font-size: 8pt;} td.arg { background-color: #d9ffb3; } .collapsibleList li > input + *{display: none;}.collapsibleList li > input:checked + *{display: block;}.collapsibleList{list-style-type: none;}.collapsibleList li > input{display: none;}.collapsibleList label{cursor: pointer; text-decoration: underline;}.fixed{position: fixed; top: 0; left: 6;}.container{width: 100%; margin: auto;}.stack{width: 48%; float: left; overflow-y: auto;}.heap{margin-left: 2%; width: 46%; float: left; padding: 2px; overflow-y: auto;} .heap table { width: 100%; background-color: #FDF1FA; } .clear{clear: both;} b { margin-bottom: 10px; display: block; } </style></head><body><div class=\"container\"><div class=\"stack\"><b>Stack:</b>";
 	private static final String htmlFooter = "</div><div class=\"clear\"></div></div></body><script>window.onload=function(){var avatarElem=document.getElementById('ff'); var avatarSourceBottom=avatarElem.getBoundingClientRect().bottom + window.pageYOffset; window.onscroll=function(){if (avatarElem.classList.contains('fixed') && window.pageYOffset < avatarSourceBottom){avatarElem.classList.remove('fixed');}else if (window.pageYOffset > avatarSourceBottom){avatarElem.classList.add('fixed');}};};</script></html>";
@@ -73,8 +78,24 @@ public class HtmlBuilder {
 	 */
 	private String getStackHtml(StackStrings stack) {
 		String stackFramesHtml = getStackFramesHtml(stack);
-		String stackHtml = stackHeader + stackFramesHtml;
+		String stackHtml = stackHeader +  getButtonsHtml() + stackFramesHtml;
 		return stackHtml;
+	}
+	
+	/*
+	 * The method build HTML string for buttons
+	 */
+	private String getButtonsHtml() {
+		String buttonsHtml = getButtonHtml(Global.BACK)+ space + getButtonHtml(Global.FORWARD) + separator;
+		return buttonsHtml;
+	}
+	
+	/*
+	 * The method build HTML string for the button
+	 */
+	private String getButtonHtml(String buttonName) {
+		String buttonHtml = String.format(buttonTemplate, buttonName);
+		return buttonHtml;
 	}
 
 	/*

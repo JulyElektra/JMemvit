@@ -7,7 +7,8 @@ Bundle-Activator: org.innopolis.jmemvit.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
- org.eclipse.debug.ui
+ org.eclipse.debug.ui,
+ org.junit
 Bundle-ActivationPolicy: lazy
 Import-Package: com.sun.jdi,
  com.sun.jdi.connect,

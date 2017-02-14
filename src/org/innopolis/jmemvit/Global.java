@@ -14,4 +14,6 @@ public final class Global {
 	public static final String VARIABLES = "variables";
 	public static final String METHOD_NAME = "method name";
 	public static final String CLASS_NAME = "class name";
+	public static final String BACK = "Back";
+	public static final String FORWARD = "Forward";
 }

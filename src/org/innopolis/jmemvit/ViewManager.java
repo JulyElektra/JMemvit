@@ -9,9 +9,20 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.browser.LocationListener;
+import org.eclipse.swt.internal.win32.TBBUTTON;
+import org.eclipse.swt.internal.win32.TCHAR;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
+import org.innopolis.jmemvit.temporal.MyFileWriter;
 import org.json.JSONObject;
 
 /**
@@ -21,8 +32,18 @@ public class ViewManager extends ViewPart {
 
 	private DebugEventListener jdiEventListener;
 	private Browser browser;
-	private JsonBuilder jsonBuilder = new JsonBuilder();
+	private JsonBuilder jsonBuilder;
 	
+
+	public ViewManager(DebugEventListener jdiEventListener) {
+		this.jdiEventListener = jdiEventListener;
+		this.jsonBuilder = new JsonBuilder();
+	}
+
+	public ViewManager() {
+		this.jsonBuilder = new JsonBuilder();
+	}
+
 	class RunnableForThread implements Runnable{
 		public void run() {
 			while (true) {
@@ -44,9 +65,20 @@ public class ViewManager extends ViewPart {
 	
 	@Override
 	public void createPartControl(Composite parent) {
-		
+		System.out.println(parent.getClass().getSimpleName());
 		browser = new Browser(parent, SWT.NONE);
 		browser.setText("<html><body>Stack and heap will appear here.Please, start debugging.</body></html>");
+		
+		/*Button button = new Button(parent, SWT.PUSH);
+		button.setText("Back");
+		button.setBounds(5, 5, 20, 40);
+		button.setLocation(5, 5);
+		button.setSize(20, 40);
+		button.setAlignment(SWT.LEFT);
+		button.*/
+		
+		
+		
 		
 		jdiEventListener = new DebugEventListener();
 		DebugPlugin.getDefault().addDebugEventListener(jdiEventListener);		
@@ -71,7 +103,7 @@ public class ViewManager extends ViewPart {
 			IStackFrame[] frames = getActualStackFrames();
 			
 			// Writing data in JSON
-			JSONObject json = jsonBuilder.getJson(frames);
+			JSONObject json = jsonBuilder.addInJson(frames);
 			
 			// Reading from JSON information about the current state
 			State currentState = getCurrentState(json);
@@ -105,14 +137,9 @@ public class ViewManager extends ViewPart {
 	 */
 	private State getCurrentState(JSONObject json) {
 		JsonReader jsonReader = new JsonReader(json);
-		try {
-			ArrayList<State> states = jsonReader.read();
-			int current = states.size() - 1;
-			return states.get(current);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}		
-		return null;
+		ArrayList<State> states = jsonReader.read();
+		int current = states.size() - 1;
+		return states.get(current);	
 	}
 
 	/*

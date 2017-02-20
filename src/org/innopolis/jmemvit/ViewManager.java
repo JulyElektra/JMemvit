@@ -1,15 +1,35 @@
 package org.innopolis.jmemvit;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.Window;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+
+import javax.swing.Action;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.INavigationHistory;
+import org.eclipse.ui.INavigationLocation;
+import org.eclipse.ui.IWorkbenchCommandConstants;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.internal.NavigationHistory;
+import org.eclipse.ui.internal.NavigationHistoryAction;
+import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
 import org.innopolis.jmemvit.temporal.MyFileWriter;
 import org.json.JSONObject;
@@ -24,6 +44,8 @@ public class ViewManager extends ViewPart {
 	private JsonBuilder jsonBuilder;
 	private State currentState;
 	private int currentStateNumber;
+	private ArrayList<INavigationLocation> locations = new ArrayList<INavigationLocation>();
+	private int currentLocationID;
 	
 
 	/**
@@ -79,13 +101,13 @@ public class ViewManager extends ViewPart {
 	    rowLayout.type = SWT.HORIZONTAL;
 	    buttonsLayout.setLayout(rowLayout);
 	    
-	    Button back = new Button(buttonsLayout, SWT.PUSH | SWT.TOP);
-	    back.setText("Back");
-	    back.setEnabled(true);
+	    Button backButton = new Button(buttonsLayout, SWT.PUSH | SWT.TOP);
+	    backButton.setText("Back");
+	    backButton.setEnabled(true);
 		
-	    Button forward = new Button(buttonsLayout, SWT.PUSH | SWT.TOP);
-	    forward.setText("Forward");
-	    forward.setEnabled(true);
+	    Button forwardButton = new Button(buttonsLayout, SWT.PUSH | SWT.TOP);
+	    forwardButton.setText("Forward");
+	    forwardButton.setEnabled(true);
 
 	    
 	    browser = new Browser(parent, SWT.NONE);
@@ -101,17 +123,60 @@ public class ViewManager extends ViewPart {
 			    
 		browser.setText("<html><body>Stack and heap will appear here.Please, start debugging.</body></html>");
 
-		
-		back.addListener(SWT.Selection, new Listener() {
-	         public void handleEvent(Event event) {
-	         back();
-	         //System.out.println("I am here!!!!!!!!!!!!!!!!!!!!");
-	         }
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+//        NavigationHistoryAction a = new NavigationHistoryAction(window , true);
+//
+//        
+//        IWorkbenchPage page = a.getActivePage();
+        //IEditorPart editor = (IEditorPart) page.getNavigationHistory();
+        //( input, MyEditor.ID );
+        //page.getNavigationHistory().markLocation( editor );
+        
+//        IEditorPart editor = window.getActivePage().getActiveEditor();
+//        INavigationHistory nh = window.getActivePage().getNavigationHistory();
+//        nh.markLocation(editor);
+//        INavigationLocation location =  nh.getCurrentLocation();
+//        locations.add(location);
+//        currentLocationID = locations.size() - 1;
+        
+        
+        IAction backward = ActionFactory.BACKWARD_HISTORY.create( window );
+        backward.setId( IWorkbenchCommandConstants.NAVIGATE_BACKWARD_HISTORY );
+        
+        IAction forward = ActionFactory.FORWARD_HISTORY.create( window );
+        forward.setId( IWorkbenchCommandConstants.NAVIGATE_FORWARD_HISTORY );
+
+
+        //IToolBarManager navigation = new ToolBarManager( SWT.FLAT );
+        //navigation.add(backward);
+        //navigation.add(forward);
+
+		backButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+		        back();	
+//		        int priviousLocation = currentLocationID - 1;
+//		        int firstLocation = 0;
+//		        if (priviousLocation < firstLocation) {
+//		        	 priviousLocation = firstLocation;
+//		        }
+//		        locations.get(priviousLocation).restoreLocation();
+		        
+		        backward.run();	         
+	        }
 	      });
-	    forward.addListener(SWT.Selection, new Listener() {
+	    
+		forwardButton.addListener(SWT.Selection, new Listener() {
 	         public void handleEvent(Event event) {
-	         forward();
-	         }
+		         forward();
+//		         int nextLocation = currentLocationID + 1;
+//		         int lastLocation = locations.size() - 1;
+//		         if (nextLocation > lastLocation) {
+//		        	 nextLocation = lastLocation;
+//		         }
+//		         locations.get(nextLocation).restoreLocation();
+		         
+		         forward.run();
+	         }     
 	      });
 
 		
@@ -169,12 +234,15 @@ public class ViewManager extends ViewPart {
 	private void visualizeCurrentState(JSONObject json) {
 		// Reading from JSON information about the current state
 		currentState = getCurrentState(json);
+		
+		if (currentState != null){	
+			
+			// Building HTML format string with data
+			String currentStateHTML = getStateHTML(currentState);
 					
-		// Building HTML format string with data
-		String currentStateHTML = getStateHTML(currentState);
-					
-		// Visualization
-		visualize(currentStateHTML);		
+			// Visualization
+			visualize(currentStateHTML);
+		}	
 	}
 
 	/*
@@ -190,12 +258,17 @@ public class ViewManager extends ViewPart {
 	 */
 	private State getCurrentState(JSONObject json) {
 		JsonReader jsonReader = new JsonReader(json);
-		ArrayList<State> states = jsonReader.read();		
+		ArrayList<State> states = jsonReader.read();	
+		if (states.isEmpty()) {
+			return null;
+		}
 		int current = states.size() - currentStateNumber;
 		if (current < 0) {
 			currentStateNumber--;
+			current++;
 		}
-		return states.get(current);	
+		State currentState = states.get(current);
+		return currentState;	
 	}
 
 	/*

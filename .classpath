@@ -13,5 +13,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="C:/WorkSpaces/Eclipse luna/luna projects/JMemvit/lib/jmockit.jar" sourcepath=""/>
 	<classpathentry exported="true" kind="lib" path="C:/WorkSpaces/Eclipse luna/luna projects/JMemvit/lib/junit-tools.jar" sourcepath=""/>
+	<classpathentry exported="true" kind="lib" path="C:/WorkSpaces/Eclipse luna/luna projects/apache-log4j-1.2.17/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

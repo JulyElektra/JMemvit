@@ -17,6 +17,13 @@ public class HtmlBuilder {
 			+ "<td class=\"tg-d67s\">Name</td>"
 			+ "<td class=\"tg-d67s\">Value</td>"
 			+ "</tr>";
+	
+	private static final String varsHeapHeader = " <tr>   "
+			+ " <td class=\"tg-d67s\">Type</td>"
+			+ "<td class=\"tg-d67s\">Name</td>"
+			+ "<td class=\"tg-d67s\">Value</td>"
+			+ "<td class=\"tg-d67s\">Fields</td>"
+			+ "</tr>";
 	private static final String tableFooter = "</table>";
 	private static final String tableHeader = ""
 			+ "<style type=\"text/css\">"
@@ -46,6 +53,13 @@ public class HtmlBuilder {
 			+ "<td class=\"tg-yw4l\">%s</td>"
 			+ "</tr>";	
 	
+	private static final String varHeapHtmlTemplate = ""
+			+ "<tr>"
+			+ "<td class=\"tg-yw4l\">%s</td>"
+			+ "<td class=\"tg-yw4l\">%s</td>"
+			+ "<td class=\"tg-yw4l\">%s</td>"
+			+ "<td class=\"tg-yw4l\">%s</td>"
+			+ "</tr>";	
 	/**
 	 * The constructor
 	 */
@@ -104,31 +118,44 @@ public class HtmlBuilder {
 	 */
 	private String getHeapHtml(HeapStrings heap) {
 		ArrayList<Variable> vars = heap.getVariables();
-		String heapHtml = heapHeader + tableHeader + getVarsHtml(vars) + tableFooter;
+		String heapHtml = heapHeader + tableHeader + getVarsHtml(vars, Global.HEAP) + tableFooter;
 		return heapHtml;
 	}
+
 	
 	/*
 	 * The method build HTML string for variables
 	 */
-	private String getVarsHtml(ArrayList<Variable> vars) {
-		String varsHtml = varsHeader;
+	private String getVarsHtml(ArrayList<Variable> vars, String partOfVizualization) {
+		String varsHtml; 
+		if (partOfVizualization.equals(Global.HEAP)) {
+			varsHtml = varsHeapHeader;
+		} else {
+			varsHtml = varsHeader;
+		}		
 		for (Variable var: vars){
-			String varHtml = getVarHtml(var);
+			String varHtml = getVarHtml(var, partOfVizualization);
 			varsHtml = varsHtml + varHtml;
 		}
 		return varsHtml;
 	}
-
+	
 	/*
 	 * The method build HTML string for the variable
 	 */
-	private String getVarHtml(Variable var) {
+	private String getVarHtml(Variable var, String partOfVizualization) {
 		String name = var.getName();
 		String type = var.getType();
 		String value = var.getValue();
-		String varHtml = String.format(varHtmlTemplate, type, name, value);
-				//type + varDataSplitter + name + varDataSplitter + value;
+		String fields = var.getFields();
+		
+		String varHtml;
+		if (partOfVizualization.equals(Global.HEAP)) {
+			varHtml = String.format(varHeapHtmlTemplate, type, name, value, fields);
+		} else {
+			varHtml = String.format(varHtmlTemplate, type, name, value);
+		}
+
 		return varHtml;
 	}
 
@@ -153,7 +180,7 @@ public class HtmlBuilder {
 		String frameName = frame.getName();
 		String frameTitleHtml = getFrameTitleHtml(number, frameName);
 		ArrayList<Variable> vars = frame.getVars();
-		String varsHtml = getVarsHtml(vars);
+		String varsHtml = getVarsHtml(vars, Global.STACK);
 		String stackFrameHtml = tableHeader + frameTitleHtml + varsHtml + tableFooter;
 		return stackFrameHtml;
 	}

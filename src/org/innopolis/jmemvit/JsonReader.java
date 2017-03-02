@@ -67,7 +67,8 @@ public class JsonReader {
 		String name = (String) varJSObj.get(Global.NAME);
 		String type = (String) varJSObj.get(Global.TYPE);
 		String value = (String) varJSObj.get(Global.VALUE);
-		Variable var = new Variable(name,  type, value);
+		String fields = (String) varJSObj.get(Global.FIELDS);
+		Variable var = new Variable(name,  type, value, fields);
 		return var;
 	}
 

@@ -44,8 +44,8 @@ public class ViewManager extends ViewPart {
 	private JsonBuilder jsonBuilder;
 	private State currentState;
 	private int currentStateNumber;
-	private ArrayList<INavigationLocation> locations = new ArrayList<INavigationLocation>();
-	private int currentLocationID;
+//	private ArrayList<INavigationLocation> locations = new ArrayList<INavigationLocation>();
+//	private int currentLocationID;
 	
 
 	/**

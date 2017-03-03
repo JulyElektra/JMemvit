@@ -21,17 +21,19 @@ public class Variable {
 	private String type;
 	private String value;
 	private String fields;
+	private String hasValueChanged;
 	
 	
 	/**
 	 * The constructor
+	 * @param hasValueChanged 
 	 */
-	public Variable(String name, String type, String value, String fields) {
+	public Variable(String name, String type, String value, String fields, String hasValueChanged) {
 		this.name = name;
 		this.type = type;
 		this.value = value;
 		this.fields = fields; 
-		
+		this.hasValueChanged = hasValueChanged;
 	}
 	
 	/**
@@ -53,6 +55,11 @@ public class Variable {
 
 	public String getValue() {
 		return value;
+	}
+	
+
+	public String getHasValueChanged() {
+		return hasValueChanged;
 	}
 
 	/*
@@ -177,7 +184,9 @@ public class Variable {
 			String varValue = var.getValue().toString();
 			varMap.put(Global.VALUE, varValue);
 			String varType = var.getReferenceTypeName();
-			varMap.put(Global.TYPE, varType);	
+			varMap.put(Global.TYPE, varType);
+			String hasValueChanged  = var.hasValueChanged() + "";
+			varMap.put(Global.HAS_VALUE_CHANGED, hasValueChanged);
 		} catch (DebugException e) {
 			e.printStackTrace();
 		}

@@ -17,4 +17,5 @@ public final class Global {
 	public static final String BACK = "Back";
 	public static final String FORWARD = "Forward";
 	public static final String FIELDS = "Fields";
+	public static final String HAS_VALUE_CHANGED = "Changed";
 }

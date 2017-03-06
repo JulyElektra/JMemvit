@@ -64,11 +64,11 @@ public class JsonReader {
 	 * and creates variable with these data
 	 */
 	private Variable getVariable(JSONObject varJSObj) {
-		String name = (String) varJSObj.get(Global.NAME);
-		String type = (String) varJSObj.get(Global.TYPE);
-		String value = (String) varJSObj.get(Global.VALUE);
-		String fields = (String) varJSObj.get(Global.FIELDS);
-		String hasValueChanged  = (String) varJSObj.get(Global.HAS_VALUE_CHANGED);
+		String name = (String) varJSObj.get(Global.KEY + Global.NAME.toUpperCase());
+		String type = (String) varJSObj.get(Global.KEY + Global.TYPE.toUpperCase());
+		String value = (String) varJSObj.get(Global.KEY + Global.VALUE.toUpperCase());
+		String fields = (String) varJSObj.get(Global.KEY + Global.FIELDS.toUpperCase());
+		String hasValueChanged  = (String) varJSObj.get(Global.KEY + Global.HAS_VALUE_CHANGED.toUpperCase());
 		Variable var = new Variable(name,  type, value, fields, hasValueChanged);
 		return var;
 	}

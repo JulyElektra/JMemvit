@@ -9,6 +9,7 @@ public final class Global {
 	public static final String HEAP = "Heap";
 	public static final String NAME = "name";
 	public static final String VALUE = "value";
+	public static final String HAS_VALUE_CHANGED = "changed";
 	public static final String PROGRAM_COUNTER = "Program counter";
 	public static final String TYPE = "type";
 	public static final String VARIABLES = "variables";
@@ -17,5 +18,6 @@ public final class Global {
 	public static final String BACK = "Back";
 	public static final String FORWARD = "Forward";
 	public static final String FIELDS = "Fields";
-	public static final String HAS_VALUE_CHANGED = "Changed";
+	public static final String KEY = "KEY_";
+
 }

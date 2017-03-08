@@ -1,35 +1,21 @@
 package org.innopolis.jmemvit;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.Window;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import javax.swing.Action;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.INavigationHistory;
-import org.eclipse.ui.INavigationLocation;
 import org.eclipse.ui.IWorkbenchCommandConstants;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.internal.NavigationHistory;
-import org.eclipse.ui.internal.NavigationHistoryAction;
-import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
 import org.innopolis.jmemvit.temporal.MyFileWriter;
 import org.json.JSONObject;
@@ -44,10 +30,8 @@ public class ViewManager extends ViewPart {
 	private JsonBuilder jsonBuilder;
 	private State currentState;
 	private int currentStateNumber;
-//	private ArrayList<INavigationLocation> locations = new ArrayList<INavigationLocation>();
-//	private int currentLocationID;
-	
 
+	
 	/**
 	 * The constructor
 	 */
@@ -221,9 +205,9 @@ public class ViewManager extends ViewPart {
 			currentStateNumber = 1;
 			visualizeCurrentState(json);
 						
-			// TODO delete in the final version
-			String jsonString = json.toString();
-			MyFileWriter.write(jsonString);
+//			// TODO delete in the final version
+//			String jsonString = json.toString();
+//			MyFileWriter.write(jsonString);
 		}
 		else {
 			// There is no updates or nothing

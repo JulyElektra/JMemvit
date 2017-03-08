@@ -1,18 +1,10 @@
 package org.innopolis.tests;
 
-import java.awt.Graphics;
-import java.awt.Shape;
-
-import javax.swing.text.BadLocationException;
-import javax.swing.text.View;
-import javax.swing.text.Position.Bias;
 
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.custom.ViewForm;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.innopolis.jmemvit.DebugEventListener;

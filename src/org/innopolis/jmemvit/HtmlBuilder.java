@@ -1,24 +1,19 @@
 package org.innopolis.jmemvit;
 
+import static org.innopolis.jmemvit.Global.*;
+
 import java.util.ArrayList;
 
 public class HtmlBuilder {
 	private State state;
-	private static final String space = "&nbsp;";
-	private static final String separator = "<p>";
-	private static final String buttonTemplate = "<a class=\"button\" href=\"#\">%s</a>"
-			+ "<style type=\"text/css\">.button {display: inline-block;text-align: center; vertical-align: middle;  padding: 12px 24px;	    border: 1px solid #273ba1;border-radius: 8px;background: #534aff;    background: -webkit-gradient(linear, left top, left bottom, from(#534aff), to(#394dde));	    background: -moz-linear-gradient(top, #534aff, #394dde);	    background: linear-gradient(to bottom, #534aff, #394dde);	    text-shadow: #591717 1px 1px 1px;	    font: normal normal bold 16px verdana;	    color: #ffffff;	    text-decoration: none;	}	.button:hover,	.button:focus {	    border: 1px solid #3e5eff;	    background: #6459ff;	    background: -webkit-gradient(linear, left top, left bottom, from(#6459ff), to(#445cff));	    background: -moz-linear-gradient(top, #6459ff, #445cff);	    background: linear-gradient(to bottom, #6459ff, #445cff);	    color: #ffffff;	    text-decoration: none;	}	.button:active {	    background: #322c99;	    background: -webkit-gradient(linear, left top, left bottom, from(#322c99), to(#394dde));	    background: -moz-linear-gradient(top, #322c99, #394dde);	    background: linear-gradient(to bottom, #322c99, #394dde);	}</style>";
 
-	//private static final String htmlHeader = "";//<html>";
-	//private static final String htmlFooter = "";//</html>";
-	
 	
 	// Parameter "Stack" or "Heap"
 	private static final String heapHeader = "<td width=\"50%\" style=\"vertical-align: top;\"><div><strong>Heap:</strong></div>";
 	private static final String stackHeader = "<td width=\"50%\" style=\"vertical-align: top;\"><div><strong>Stack:</strong></div>";
 	private static final String heapOrStackFooter = "</td>";
 	
-	private static final String subTableHeader = "<table width=\"95%\"><tbody>";
+	private static final String subTableHeader = "<table width=\"95%\" border=\"1\" style =\"border: 1px solid #000000;border-collapse: collapse; border-color:#000000;\" ><tbody>";
 	private static final String subTableFooter = "</tbody></table>";
 	
 	// Template for building HTML string for stack frame title. Arguments: frameNumber, frameName
@@ -51,8 +46,8 @@ public class HtmlBuilder {
 			+ "</table >"
 			+ "</td></tr>";
 	
-	private static final int width = 1600;
-	private static final String tableHeader = "<table width=\"" + width + "\"><tbody> <tr>";
+	private static final int pageWidth = 1200;
+	private static final String tableHeader = "<style>td{border-color:#000000;}div{height:auto;} </style><table width=\"" + pageWidth + "\"><tbody> <tr>";
 	private static final String tableFooter = "</tr></tbody></table>";
 	
 	private static final String highlightCell = "<td style=\"background-color: #FFFF00; word-break: break-all;\" \"> ";
@@ -70,12 +65,25 @@ public class HtmlBuilder {
 			+ "<td  style=\"word-break: break-all;\">%s</td>"
 			+ "<td  style=\"word-break: break-all;\">%s</td>";
 	
+	private static final int colomnWidth =  (int) (pageWidth * 0.50 * 0.95 * 0.55 / 3);
+	
 	// Template for building HTML string for variables. Arguments: type, name, value	
 	private static final String varFieldHtmlTemplate =  ""
 			+ "<tr style=\"vertical-align: top;\">"
-			+ "<td width = \"139\" style=\"word-break: break-all;\">%s</td>"
-			+ "<td width = \"139\" style=\"word-break: break-all;\">%s</td>"
-			+ "<td width = \"139\" style=\"word-break: break-all;\">%s</td>";
+			+ "<td width = \"" + colomnWidth + "\" style=\"word-break: break-all;\">%s</td>"
+			+ "<td width = \"" + colomnWidth + "\" style=\"word-break: break-all;\">%s</td>"
+			+ "<td width = \"" + colomnWidth + "\" style=\"word-break: break-all;\">%s</td>";
+	
+	private static final String highlightCellField = "<td width = \"" + colomnWidth + "\" style=\"background-color: #FFFF00; word-break: break-all;\" \"> ";
+	
+	private static final String varFieldHighlightHtmlTemplate =  ""
+			+ "<tr style=\"vertical-align: top;\">"
+			+ "<td width = \"" + colomnWidth + "\"  style=\"word-break: break-all;\">%s</td>"
+			+ "<td width = \"" + colomnWidth + "\"  style=\"word-break: break-all;\">%s</td>"
+			+ highlightCellField + "%s</td>";
+	
+	private static final String varHighlightFieldHtmlTemplate =  
+			varFieldHighlightHtmlTemplate +  "</tr>";	
 
 	// Template for building HTML string for Stack variables. Arguments: type, name, value
 	private static final String varStackHtmlTemplate =  
@@ -88,17 +96,17 @@ public class HtmlBuilder {
 	private static final String varHeapHtmlTemplate = 
 			//varHtmlTemplate 
 			"<td >"
-			+ "<table width=\"100%\"><tbody>";
+			+ "<table width=\"100%\" border=\"1\" style =\"border: 1px solid #000000;border-collapse: collapse;border-color:#FFFFFF; \"><tbody>";
 	
 	
 	private static final String varHighlightHeapHtmlTemplate = 
 			//varHighlightHtmlTemplate 
 			"<td >"
-			+ "<table width=\"100%\"><tbody>";
+			+ "<table width=\"100%\"  border=\"1\" style =\"border: 1px solid #000000;border-collapse: collapse;border-color:#FFFFFF;\"><tbody>";
 
 	
 	private static final String tableFieldsFooter = "</tbody></table></td></tr>";
-	private static final String colomnRowFooter = "</td></tr>";
+
 	
 	
 	/**
@@ -112,7 +120,7 @@ public class HtmlBuilder {
 	 * The method returns HTML string for the state
 	 */
 	public String getHtmlString() {
-		StackStrings stack = state.getStack();
+		StackFrameStrings stack = state.getStack();
 		HeapStrings heap = state.getHeap();
 		String htmlString = build(stack, heap);
 		return htmlString;
@@ -121,7 +129,7 @@ public class HtmlBuilder {
 	/*
 	 * The method build HTML string for the stack and heap
 	 */
-	private String build(StackStrings stack, HeapStrings heap) {
+	private String build(StackFrameStrings stack, HeapStrings heap) {
 		String stackHtml = getStackHtml(stack);
 		String heapHtml = getHeapHtml(heap);
 		String htmlString = tableHeader + stackHtml + heapHtml + tableFooter;
@@ -131,35 +139,20 @@ public class HtmlBuilder {
 	/*
 	 * The method build HTML string for the stack
 	 */
-	private String getStackHtml(StackStrings stack) {
+	private String getStackHtml(StackFrameStrings stack) {
 		String stackFramesHtml = getStackFramesHtml(stack);
 		//String stackHtml = stackHeader +  getButtonsHtml() + stackFramesHtml;
 		String stackHtml = stackHeader + stackFramesHtml + heapOrStackFooter;
 		return stackHtml;
 	}
 	
-	/*
-	 * The method build HTML string for buttons
-	 */
-	private String getButtonsHtml() {
-		String buttonsHtml = getButtonHtml(Global.BACK)+ space + getButtonHtml(Global.FORWARD) + separator;
-		return buttonsHtml;
-	}
-	
-	/*
-	 * The method build HTML string for the button
-	 */
-	private String getButtonHtml(String buttonName) {
-		String buttonHtml = String.format(buttonTemplate, buttonName);
-		return buttonHtml;
-	}
 
 	/*
 	 * The method build HTML string for the heap
 	 */
 	private String getHeapHtml(HeapStrings heap) {
 		ArrayList<Variable> vars = heap.getVariables();
-		String heapHtml = heapHeader + subTableHeader + getVarsHtml(vars, Global.HEAP) + subTableFooter;
+		String heapHtml = heapHeader + subTableHeader + getVarsHtml(vars, HEAP) + subTableFooter;
 		return heapHtml;
 	}
 
@@ -169,12 +162,13 @@ public class HtmlBuilder {
 	 */
 	private String getVarsHtml(ArrayList<Variable> vars, String partOfVizualization) {
 		String varsHtml; 
-		if (partOfVizualization.equals(Global.HEAP)) {
+		if (partOfVizualization.equals(HEAP)) {
 			varsHtml = varsHeapHTML;
 		} else {
 			varsHtml = varsStackHTML;
-		}		
-		for (Variable var: vars){
+		}	
+		Variable.sortVariablesByType(vars); 
+		for (Variable var: vars){ 
 			String varHtml = getVarHtml(var, partOfVizualization);
 			varsHtml = varsHtml + varHtml;
 		}
@@ -192,25 +186,29 @@ public class HtmlBuilder {
 		
 		String hasChanged = var.getHasValueChanged();
 		
-		String varHtml;
+		String varHtml = "";
 		
 		if (hasChanged.equals("true")) {
-			if (partOfVizualization.equals(Global.HEAP)) {
+			if (partOfVizualization.equals(HEAP)) {
 				varHtml = String.format(varHighlightHtmlTemplate, type, name, value, fields)+ varHighlightHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
-			} else if (partOfVizualization.equals(Global.STACK)){
+			} else if (partOfVizualization.equals(STACK)){
 				varHtml = String.format(varHighlightStackHtmlTemplate, type, name, value);
 			} else {
-				varHtml = String.format(varHighlightStackHtmlTemplate, type, name, value);
+				varHtml = String.format(varHighlightFieldHtmlTemplate, type, name, value);
 			}
-		} else {			
-			if (partOfVizualization.equals(Global.HEAP)) {
+		} else if (hasChanged.equals("false")) {			
+			if (partOfVizualization.equals(HEAP)) {
 				varHtml = String.format(varHtmlTemplate, type, name, value, fields)+ varHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
-			} else if (partOfVizualization.equals(Global.STACK)){
+			} else if (partOfVizualization.equals(STACK)){
 				varHtml = String.format(varStackHtmlTemplate, type, name, value);
 			} else {
 				varHtml = String.format(varFieldHtmlTemplate, type, name, value);	
 			}
-		}
+		} else {
+// TODO			
+		}	
+		
+		
 		return varHtml;
 	}
 
@@ -219,9 +217,9 @@ public class HtmlBuilder {
 		if (fields.isEmpty() || fields == null) {
 			return fieldsHtml;
 		}
-		
+		Variable.sortVariablesByType(fields); 
 		for (Variable v: fields) {
-			fieldsHtml = fieldsHtml + getVarHtml(v, Global.FIELDS);
+			fieldsHtml = fieldsHtml + getVarHtml(v, FIELDS);
 		}
 		return fieldsHtml;
 	}
@@ -229,7 +227,7 @@ public class HtmlBuilder {
 	/*
 	 * The method build HTML string for stack frames
 	 */
-	private String getStackFramesHtml(StackStrings stack) {
+	private String getStackFramesHtml(StackFrameStrings stack) {
 		String stackFramesHtml = "";
 		ArrayList<StackFrame> stackFrames = stack.getStackFrames();
 		for (StackFrame frame: stackFrames) {
@@ -247,7 +245,7 @@ public class HtmlBuilder {
 		String frameName = frame.getName();
 		String frameTitleHtml = getFrameTitleHtml(number, frameName);
 		ArrayList<Variable> vars = frame.getVars();
-		String varsHtml = getVarsHtml(vars, Global.STACK);
+		String varsHtml = getVarsHtml(vars, STACK);
 		String stackFrameHtml = subTableHeader + frameTitleHtml + varsHtml + subTableFooter;
 		return stackFrameHtml;
 	}

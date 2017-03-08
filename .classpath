@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry exported="true" kind="lib" path="lib/json-20160810.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins">
 		<accessrules>
 			<accessrule kind="accessible" pattern="com/sun/jdi/**"/>
@@ -10,9 +14,14 @@
 			<accessrule kind="accessible" pattern="org/eclipse/cdt/launch/internal/ui/LaunchUIPlugin"/>
 		</accessrules>
 	</classpathentry>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="C:/WorkSpaces/Eclipse luna/luna projects/JMemvit/lib/jmockit.jar" sourcepath=""/>
 	<classpathentry exported="true" kind="lib" path="C:/WorkSpaces/Eclipse luna/luna projects/JMemvit/lib/junit-tools.jar" sourcepath=""/>
 	<classpathentry exported="true" kind="lib" path="C:/WorkSpaces/Eclipse luna/luna projects/apache-log4j-1.2.17/log4j-1.2.17.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

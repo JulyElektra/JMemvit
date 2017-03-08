@@ -10,23 +10,23 @@ import java.util.Date;
 public class State implements Comparable<Object>{
 	
 	private String date;	
-	private StackStrings stack;
+	private StackFrameStrings stack;
 	private HeapStrings heap;
 		
 	/**
 	 * The constructor
 	 */
-	public State(String date, StackStrings stack, HeapStrings heap) {
+	public State(String date, StackFrameStrings stack, HeapStrings heap) {
 		this.date = date;
 		this.stack = stack;
 		this.heap = heap;
 	}
 
-	public StackStrings getStack() {
+	public StackFrameStrings getStack() {
 		return stack;
 	}
 
-	public void setStack(StackStrings stack) {
+	public void setStack(StackFrameStrings stack) {
 		this.stack = stack;
 	}
 
@@ -53,9 +53,9 @@ public class State implements Comparable<Object>{
 	public int compareTo(Object o) {
 		int comparison = 0;		
 		if (o instanceof State) {
-			Date thisDate = getDateTime(date);
+			Date thisDate = DateTime.stringTimeToDateTime(date);
 			State os = (State) o;
-			Date anotherDate = getDateTime(os.getDate());	
+			Date anotherDate = DateTime.stringTimeToDateTime(os.getDate());	
 			comparison = thisDate.compareTo(anotherDate);
 		} else {
 			try {
@@ -67,18 +67,4 @@ public class State implements Comparable<Object>{
 		return comparison;
 	}
 	
-	/*
-	 * Convert String date format into Date format
-	 */
-	private static Date getDateTime(String dateString) {		
-		SimpleDateFormat dateFormated = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss:SSS");
-		Date date = null;
-		try {
-			date = dateFormated.parse("01.01.1990 00:00:00:000"); // the default value in case of wrong format of data
-			date = dateFormated.parse(dateString);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return date;		
-	}
 }

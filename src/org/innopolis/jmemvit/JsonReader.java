@@ -1,5 +1,7 @@
 package org.innopolis.jmemvit;
 
+import static org.innopolis.jmemvit.Global.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,15 +44,106 @@ public class JsonReader {
 				listOfStates.add(state);
 			}
 		}
+		setJustInitializedVars();
 		return listOfStates;
 	}
 	
+	private void setJustInitializedVars() {
+		for (int stateNum = 0; stateNum < listOfStates.size(); stateNum ++) {
+			State stateCurrent = listOfStates.get(stateNum);
+			ArrayList<Variable> variablesJustInitialized = new ArrayList<Variable>();
+			if (stateNum == 0) {
+				variablesJustInitialized = getAllVars(stateCurrent);
+			} else {
+				State statePrivious = listOfStates.get(stateNum - 1);
+				variablesJustInitialized =  getVariablesJustInitialized(statePrivious, stateCurrent);
+			}
+			setVarsJustInitialized(variablesJustInitialized);
+		}
+	}
+
+	private void setVarsJustInitialized(
+		ArrayList<Variable> vars) {
+		for (Variable var: vars) {
+			var.setHasJustInitialized(true);
+		}
+		
+	}
+
+	private ArrayList<Variable> getVariablesJustInitialized(
+		State statePrivious, State stateCurrent) {
+		ArrayList<Variable> variablesJustInitialized = new ArrayList<Variable>();
+		variablesJustInitialized.addAll(getVarsJustInitialized(
+				getHeapVars(stateCurrent), getHeapVars(statePrivious)));
+		variablesJustInitialized.addAll(getStackVarsJustInitialized(
+				statePrivious.getStack().getStackFrames(),
+				stateCurrent.getStack().getStackFrames()));
+		return variablesJustInitialized;
+	}
+
+	private ArrayList<Variable> getStackVarsJustInitialized(
+			ArrayList<StackFrame> framesPrivious,
+			ArrayList<StackFrame> framesCurrent) {
+		ArrayList<Variable> stackVarsJustInitialized = new ArrayList<Variable>();
+		for (StackFrame frameCurrent: framesCurrent) {
+			if (!StackFrame.containsName(frameCurrent, framesPrivious)) {
+				stackVarsJustInitialized.addAll(frameCurrent.getVars());
+			} else {			
+				for (StackFrame framePrivious: framesPrivious) {
+					if (frameCurrent.getName().equals(framePrivious.getName())) {
+						stackVarsJustInitialized.addAll(getVarsJustInitialized(
+								frameCurrent.getVars(), framePrivious.getVars()));
+					}
+				}
+			}
+		}
+		return stackVarsJustInitialized;
+	}
+
+	private ArrayList<Variable>  getVarsJustInitialized(ArrayList<Variable> currentVars,
+				ArrayList<Variable> priviousVars) {
+		
+		ArrayList<Variable> varsJustInitialized = new ArrayList<Variable>();
+		for (Variable currentVar: currentVars) {
+			boolean has = false;
+			for (Variable priviousVar: priviousVars){
+				if (currentVar.equalsNameAndType(priviousVar)) {
+					has = true;
+				}
+			}
+			if (!has) {
+				varsJustInitialized.add(currentVar);
+			}
+		}		
+		return varsJustInitialized;
+	}
+
+	private ArrayList<Variable> getAllVars(State state) {
+		ArrayList<Variable> vars = new ArrayList<Variable>();		
+		vars.addAll(getHeapVars(state));
+		vars.addAll(getStackVars(state));
+		return vars;
+	}
+
+	private ArrayList<Variable> getStackVars(State state) {
+		ArrayList<Variable> vars = new ArrayList<Variable>();
+		ArrayList<StackFrame> frames = state.getStack().getStackFrames();
+		for (StackFrame frame: frames) {
+			vars.addAll(frame.getVars());
+		}
+		return vars;
+	}
+
+	private ArrayList<Variable> getHeapVars(State state) {		
+		return state.getHeap().getVariables();
+	}
+
 	/*
 	 * Returns list of variables (their name, type, value) from JSONObject with the key
 	 */
 	private ArrayList<Variable> getVars (JSONObject jsonObj, String key) {
 		ArrayList<Variable> varsList = new ArrayList<Variable>();
-		JSONArray vars = (JSONArray)((JSONObject) jsonObj.get(key)).get(Global.VARIABLES);
+		JSONArray vars = (JSONArray)((JSONObject) jsonObj.get(key)).get(VARIABLES);
 		for (Object varObj: vars){
 			JSONObject varJSObj = (JSONObject) varObj;
 			Variable var = getVariable(varJSObj);			
@@ -64,11 +157,11 @@ public class JsonReader {
 	 * and creates variable with these data
 	 */
 	private Variable getVariable(JSONObject varJSObj) {
-		String name = (String) varJSObj.get(Global.KEY + Global.NAME.toUpperCase());
-		String type = (String) varJSObj.get(Global.KEY + Global.TYPE.toUpperCase());
-		String value = (String) varJSObj.get(Global.KEY + Global.VALUE.toUpperCase());
-		String fields = (String) varJSObj.get(Global.KEY + Global.FIELDS.toUpperCase());
-		String hasValueChanged  = (String) varJSObj.get(Global.KEY + Global.HAS_VALUE_CHANGED.toUpperCase());
+		String name = (String) varJSObj.get(KEY + NAME.toUpperCase());
+		String type = (String) varJSObj.get(KEY + TYPE.toUpperCase());
+		String value = (String) varJSObj.get(KEY + VALUE.toUpperCase());
+		String fields = (String) varJSObj.get(KEY + FIELDS.toUpperCase());
+		String hasValueChanged  = (String) varJSObj.get(KEY + HAS_VALUE_CHANGED.toUpperCase());
 		Variable var = new Variable(name,  type, value, fields, hasValueChanged);
 		return var;
 	}
@@ -83,7 +176,7 @@ public class JsonReader {
 		try {
 			JSONArray jArr = (JSONArray)jObj.get(time);
 			JSONObject heapAndStack = (JSONObject) jArr.get(0);
-			StackStrings stack = getStack(time, heapAndStack);
+			StackFrameStrings stack = getStack(time, heapAndStack);
 			HeapStrings heap = getHeap(time, heapAndStack);
 			State state = new State(time, stack, heap);	
 			return state;
@@ -97,7 +190,7 @@ public class JsonReader {
 	 * This method returns a heap from JSON
 	 */
 	private HeapStrings getHeap(String time, JSONObject heapAndStack) {				
-		ArrayList<Variable> heapVars = getVars ((JSONObject) heapAndStack, Global.HEAP);
+		ArrayList<Variable> heapVars = getVars ((JSONObject) heapAndStack, HEAP);
 		HeapStrings heap = new HeapStrings(heapVars);
 		return heap;
 	}
@@ -105,10 +198,10 @@ public class JsonReader {
 	/*
 	 * This method returns a stack from JSON
 	 */
-	private StackStrings getStack(String time, JSONObject heapAndStack) {
-		JSONObject stackJSObj = (JSONObject) heapAndStack.get(Global.STACK);
+	private StackFrameStrings getStack(String time, JSONObject heapAndStack) {
+		JSONObject stackJSObj = (JSONObject) heapAndStack.get(STACK);
 		ArrayList<StackFrame> stackFrames = getStackFrames(stackJSObj);
-		StackStrings stack = new StackStrings(stackFrames);
+		StackFrameStrings stack = new StackFrameStrings(stackFrames);
 		return stack;
 	}
 
@@ -125,7 +218,7 @@ public class JsonReader {
 			ArrayList<Variable> stackFrameVars = getVars ((JSONObject) stackJSObj, stackFrameString);			
 			StackFrame stackFrame = new StackFrame(stackFrNumber, stackFrName, stackFrameVars);
 			stackFrames.add(stackFrame);
-		}
+		} 
 		return stackFrames;
 	}
 
@@ -148,66 +241,8 @@ public class JsonReader {
 	private ArrayList<String> getSortedTimeList() {
 		Set<String> times =  json.keySet();		
 		ArrayList<String> timesList = new ArrayList<String>(times);
-		ArrayList<String> sortedTimesList = sortByTime(timesList);	
+		ArrayList<String> sortedTimesList = DateTime.sortByTime(timesList);	
 		return sortedTimesList;
 	}
 
-	/*
-	 * Sorting the ArrayList of Strings by date and time
-	 */
-	private ArrayList<String> sortByTime(ArrayList<String> stringsTimesList) {
-		ArrayList<Date> dateTimeList = convertStringsToDates(stringsTimesList);
-		Collections.sort(dateTimeList);
-		ArrayList<String> resultList = convertDatesToStrings(dateTimeList);		
-		return resultList;
-	}
-
-	/*
-	 * Convert String date format into date format in ArrayLists
-	 */
-	private ArrayList<String> convertDatesToStrings(ArrayList<Date> datesList) {
-		ArrayList<String> stringList = new ArrayList<String>();
-		for (Date date: datesList) {
-			String stringDate = getDateTime(date);
-			stringList.add(stringDate);
-		}
-		return stringList;
-	}
-
-	/*
-	 * Convert Date format into string date format in ArrayLists
-	 */
-	private ArrayList<Date> convertStringsToDates(ArrayList<String> stringList){
-		ArrayList<Date> datesList = new ArrayList<Date>();
-		for (String stringDate: stringList) {
-			Date date = getDateTime(stringDate);
-			datesList.add(date);
-		}
-		return datesList;
-	}
-
-	/*
-	 * Convert String date format into Date format
-	 */
-	private static Date getDateTime(String time)  {
-		SimpleDateFormat dateFormated = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss:SSS");
-		Date date = null;
-		try {
-			date = dateFormated.parse("01.01.1990 00:00:00:000"); // the default value in case of wrong format of data
-			date = dateFormated.parse(time);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return date;		
-	}
-	
-	/*
-	 * Convert Date format into string date format
-	 */
-	private static String getDateTime(Date date) {
-		SimpleDateFormat dateFormated = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss:SSS");
-		String dateStr = dateFormated.format(date);
-		return dateStr;		
-	}
-	
 }

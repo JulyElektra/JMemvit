@@ -2,7 +2,6 @@ package org.innopolis.tests;
 
 
 import org.innopolis.jmemvit.Activator;
-import org.innopolis.jmemvit.mock.MockBundleContext;
 import org.junit.Test;
 
 

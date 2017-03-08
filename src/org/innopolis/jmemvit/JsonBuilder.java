@@ -1,5 +1,7 @@
 package org.innopolis.jmemvit;
 
+import static org.innopolis.jmemvit.Global.*;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,10 +9,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
 import org.json.*;
+
 
 /**
  * The JsonBuilder class is used for creating JSON format of Stack and Heap
@@ -39,7 +41,7 @@ public class JsonBuilder {
 	public JSONObject addInJson(IStackFrame[] frames){		
 		Stack stack = new Stack(frames) ;
 		Heap heap = new Heap(stack);
-		String date = getDateTime();
+		String date = DateTime.getCurrentDateTime();
 		Map<String, Object> heapAndStack = new HashMap<String, Object>();
 		Map<String, Object> stackMap = getStackMap(stack);
 		Map<String, Object> heapMap = getHeapMap(heap);
@@ -56,9 +58,9 @@ public class JsonBuilder {
 		ArrayList<IVariable> vars = heap.getHeap();
 		Map<String, Object> varsMap = new HashMap<String, Object>();
 		ArrayList<Map<String, String>> varsList = Variable.getVarsList(vars);
-		varsMap.put(Global.VARIABLES, varsList);	
+		varsMap.put(VARIABLES, varsList);	
 		Map<String, Object> heapMap = new HashMap<String, Object>();
-		heapMap.put(Global.HEAP, varsMap);
+		heapMap.put(HEAP, varsMap);
 		return heapMap;		
 	}
 	
@@ -68,37 +70,49 @@ public class JsonBuilder {
 	 */
 	private Map<String, Object> getStackMap(Stack stack) {
 		IStackFrame[] frames = stack.getStackFrames();
+		
 
 		Map<String, Object> frameMap = new HashMap<String, Object>();
 		for (int frameNum = 0; frameNum < frames.length; frameNum++) {
 			String frameName = stack.getStackFrameName(frames[frameNum]);
 			String frameCalssName = "";
-			try {
-				frameCalssName = frames[frameNum].getVariables()[0].getReferenceTypeName().toString();
-			} catch (DebugException e) {
-				e.printStackTrace();
-			}
+//			try {
+				
+//				IVariable[] vars = frames[frameNum].getVariables();
+//				frameCalssName = vars[0].getReferenceTypeName().toString();
+				
+				frameCalssName = StackFrame.getMethodClassName(frames[frameNum], frameNum);
+				
+//				frames[frameNum]
+				//frameCalssName = 
+				
+//				String f = frames[frameNum].getClass().getName();
+//				Location ct = new Location();
+//				Method m = 	ClassType.concreteMethodByName("", "");
+//				
+				
+//				System.out.println(f);
+				
+//				Thread.sleep(1);
+//				IThread thread = frames[frameNum].getThread();
+//				StackTraceElement[] stackTraces = thread.getStackTrace();
+//				frameCalssName =  [frameNum].getClassName();
+//			} catch (DebugException e) {
+//				e.printStackTrace();
+//			}
 			IVariable[] vars = stack.getStackFrameVariables(frames[frameNum]);
 			ArrayList<IVariable> varsArrList = new ArrayList<IVariable>(Arrays.asList(vars));
 			Map<String, Object> varsMap = new HashMap<String, Object>();
 			ArrayList<Map<String, String>> varsList = Variable.getVarsList(varsArrList);
-			varsMap.put(Global.VARIABLES, varsList);			
+			varsMap.put(VARIABLES, varsList);			
 			frameMap.put((frameNum + " " + frameCalssName + "." + frameName).toString(), varsMap);
 		}
 		Map<String, Object> stackMap = new HashMap<String, Object>();
-		stackMap.put(Global.STACK, frameMap);
+		stackMap.put(STACK, frameMap);
 		return stackMap;		
 	}
 	
-	/*
-	 * Returns data string format of current time and date
-	 */
-	private static String getDateTime() {
-		Date date = new Date();
-		SimpleDateFormat dateFormated = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss:SSS");
-		String dateStr = dateFormated.format(date);
-		return dateStr;		
-	}
+
 
 		
 }

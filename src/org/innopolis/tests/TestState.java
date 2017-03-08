@@ -3,10 +3,6 @@ package org.innopolis.tests;
 import static org.junit.Assert.*;
 
 import org.innopolis.jmemvit.*;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestState {
@@ -25,7 +21,7 @@ public class TestState {
 	//Test checks method compareTo in class State if we have wrong data
 	@Test 
 	public void comparisonWrongInput() {
-		State state1 = new State("01.01.2017 01:00:32:234", new StackStrings(),new HeapStrings() );
+		State state1 = new State("01.01.2017 01:00:32:234", new StackFrameStrings(),new HeapStrings() );
 		State state4 = new State("1234", null, null );
 		state4.compareTo(state1);
 		state1.compareTo(new Object());
@@ -37,7 +33,7 @@ public class TestState {
 		String date = "13.02.2017 12:00:32:234";
 		state1.setDate(date);
 		HeapStrings heap = new HeapStrings();
-		StackStrings stack = new StackStrings();
+		StackFrameStrings stack = new StackFrameStrings();
 		state1.setHeap(heap);
 		state1.setStack(stack);
 		assertTrue(state1.getHeap().equals(heap));

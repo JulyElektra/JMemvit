@@ -7,6 +7,6 @@ public class TestGlobal {
 
 	@Test
 	public void testInit() {
-		Global g = new Global();
+		//Global g = new Global();
 	}
 }

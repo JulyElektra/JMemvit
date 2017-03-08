@@ -22,5 +22,7 @@ public final class Global {
 	public static final String FORWARD = "Forward";
 	public static final String FIELDS = "Fields";
 	public static final String KEY = "KEY_";
+	public static final String TRUE = "true";
+	public static final String FALSE = "false";
 
 }

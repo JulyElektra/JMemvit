@@ -7,7 +7,6 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.jdt.internal.debug.core.model.JDIDebugTarget;
 
-import com.sun.jdi.ThreadReference;
 import com.sun.jdi.VirtualMachine;
 
 /**

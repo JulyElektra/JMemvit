@@ -19,7 +19,7 @@ public class HtmlBuilder {
 	// Template for building HTML string for stack frame title. Arguments: frameNumber, frameName
 	private static final String stackFrameHeaderFooter = "<tr  style=\"text-align: left;background-color: #00CED1;\"><th >%s</th><th colspan=\"2\">%s</th></tr>";
 	
-	private static final String varsHeader = "<tr  style=\"text-align: left;background-color: #AFEEEE;\">";
+	private static final String varsHeader = "<tr  style=\"text-align: left;background-color: #D3D3D3;\">";
 
 	private static final String varsStackHTML = varsHeader +  "<td width=\"33%\">Type</td>"
 			+ "	<td width=\"33%\">Name</td>"
@@ -32,10 +32,11 @@ public class HtmlBuilder {
 			+ "	<td width=\"55%\">"
 			+ "<table width=\"100%\"> "
 			+ "<tbody>"
-			+ "<tr style=\"text-align: left;background-color: #00CED1;\">"
-			+ "<td></td>"
-			+ "<td>Fields</td>"
-			+ "<td></td>"
+//			+ "<tr style=\"text-align: left;background-color: #00CED1;\">"
+			+ "<tr border=\"1\" style =\"border: 1px solid #000000;border-collapse: collapse; border-color:#000000;\">"
+//			+ "<td></td>"
+			+ "<td  style=\"text-align: left;background-color: #00CED1;font-weight: bold;\" colspan=\"3\"> Fields  </td>"
+//			+ "<td></td>"
 			+ "</tr>"
 			+ "<tr>"
 			+ "<td>Type</td>"
@@ -51,16 +52,18 @@ public class HtmlBuilder {
 	private static final String tableFooter = "</tr></tbody></table>";
 	
 	private static final String highlightCell = "<td style=\"background-color: #FFFF00; word-break: break-all;\" \"> ";
+	private static final String highlightLine = "background-color: #FFD700;";
+	private static final String notHighlightLine = "";
 	
-	private static final String varHighlightHtmlTemplate =  ""
-			+ "<tr style=\"vertical-align: top;\">"
+	private static final String varHighlightCellHtmlTemplate =  ""
+			+ "<tr style=\"vertical-align: top; %s\">"
 			+ "<td  style=\"word-break: break-all;\">%s</td>"
 			+ "<td  style=\"word-break: break-all;\">%s</td>"
 			+ highlightCell + "%s</td>";
 	
 	// Template for building HTML string for variables. Arguments: type, name, value	
 	private static final String varHtmlTemplate =  ""
-			+ "<tr style=\"vertical-align: top;\">"
+			+ "<tr style=\"vertical-align: top; %s\">"
 			+ "<td  style=\"word-break: break-all;\">%s</td>"
 			+ "<td  style=\"word-break: break-all;\">%s</td>"
 			+ "<td  style=\"word-break: break-all;\">%s</td>";
@@ -69,7 +72,7 @@ public class HtmlBuilder {
 	
 	// Template for building HTML string for variables. Arguments: type, name, value	
 	private static final String varFieldHtmlTemplate =  ""
-			+ "<tr style=\"vertical-align: top;\">"
+			+ "<tr style=\"vertical-align: top; %s\">"
 			+ "<td width = \"" + colomnWidth + "\" style=\"word-break: break-all;\">%s</td>"
 			+ "<td width = \"" + colomnWidth + "\" style=\"word-break: break-all;\">%s</td>"
 			+ "<td width = \"" + colomnWidth + "\" style=\"word-break: break-all;\">%s</td>";
@@ -77,20 +80,20 @@ public class HtmlBuilder {
 	private static final String highlightCellField = "<td width = \"" + colomnWidth + "\" style=\"background-color: #FFFF00; word-break: break-all;\" \"> ";
 	
 	private static final String varFieldHighlightHtmlTemplate =  ""
-			+ "<tr style=\"vertical-align: top;\">"
+			+ "<tr style=\"vertical-align: top; %s\">"
 			+ "<td width = \"" + colomnWidth + "\"  style=\"word-break: break-all;\">%s</td>"
 			+ "<td width = \"" + colomnWidth + "\"  style=\"word-break: break-all;\">%s</td>"
 			+ highlightCellField + "%s</td>";
 	
-	private static final String varHighlightFieldHtmlTemplate =  
+	private static final String varHighlightCellFieldHtmlTemplate =  
 			varFieldHighlightHtmlTemplate +  "</tr>";	
 
 	// Template for building HTML string for Stack variables. Arguments: type, name, value
 	private static final String varStackHtmlTemplate =  
 			varHtmlTemplate +  "</tr>";	
 	
-	private static final String varHighlightStackHtmlTemplate =  
-			varHighlightHtmlTemplate +  "</tr>";	
+	private static final String varHighlightCellStackHtmlTemplate =  
+			varHighlightCellHtmlTemplate +  "</tr>";	
 	
 	// Template for building HTML string for Heap variables. Arguments: type, name, value, fields
 	private static final String varHeapHtmlTemplate = 
@@ -99,7 +102,7 @@ public class HtmlBuilder {
 			+ "<table width=\"100%\" border=\"1\" style =\"border: 1px solid #000000;border-collapse: collapse;border-color:#FFFFFF; \"><tbody>";
 	
 	
-	private static final String varHighlightHeapHtmlTemplate = 
+	private static final String varHighlightCellHeapHtmlTemplate = 
 			//varHighlightHtmlTemplate 
 			"<td >"
 			+ "<table width=\"100%\"  border=\"1\" style =\"border: 1px solid #000000;border-collapse: collapse;border-color:#FFFFFF;\"><tbody>";
@@ -185,30 +188,212 @@ public class HtmlBuilder {
 		ArrayList<Variable> fields = var.getFields();
 		
 		String hasChanged = var.getHasValueChanged();
+		String hasJustInitialized = var.getHasJustInitialized();
 		
 		String varHtml = "";
 		
-		if (hasChanged.equals("true")) {
-			if (partOfVizualization.equals(HEAP)) {
-				varHtml = String.format(varHighlightHtmlTemplate, type, name, value, fields)+ varHighlightHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
-			} else if (partOfVizualization.equals(STACK)){
-				varHtml = String.format(varHighlightStackHtmlTemplate, type, name, value);
-			} else {
-				varHtml = String.format(varHighlightFieldHtmlTemplate, type, name, value);
-			}
-		} else if (hasChanged.equals("false")) {			
-			if (partOfVizualization.equals(HEAP)) {
-				varHtml = String.format(varHtmlTemplate, type, name, value, fields)+ varHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
-			} else if (partOfVizualization.equals(STACK)){
-				varHtml = String.format(varStackHtmlTemplate, type, name, value);
-			} else {
-				varHtml = String.format(varFieldHtmlTemplate, type, name, value);	
-			}
+		if (partOfVizualization.equals(HEAP)) {
+			varHtml = getHeapVarHtml(name, type, value, fields, hasChanged, hasJustInitialized);
+		} else if (partOfVizualization.equals(STACK)) {
+			varHtml = getStackVarHtml(name, type, value, hasChanged, hasJustInitialized);
+		} else if (partOfVizualization.equals(FIELDS)) {
+			varHtml = getFieldVarHtml(name, type, value, hasChanged, hasJustInitialized);
+		}
+		
+//// TODO		
+//		if (hasChanged.equals("true")) {
+//			if (partOfVizualization.equals(HEAP)) {
+//				varHtml = String.format(varHighlightCellHtmlTemplate, type, name, value, fields)+ varHighlightCellHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
+//			} else if (partOfVizualization.equals(STACK)){
+//				varHtml = String.format(varHighlightCellStackHtmlTemplate, type, name, value);
+//			} else {
+//				varHtml = String.format(varHighlightCellFieldHtmlTemplate, type, name, value);
+//			}
+//		} else if (hasChanged.equals("false")) {			
+//			if (partOfVizualization.equals(HEAP)) {
+//				varHtml = String.format(varHtmlTemplate, type, name, value, fields)+ varHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
+//			} else if (partOfVizualization.equals(STACK)){
+//				varHtml = String.format(varStackHtmlTemplate, type, name, value);
+//			} else {
+//				varHtml = String.format(varFieldHtmlTemplate, type, name, value);	
+//			}
+//		} else {
+//// TODO			
+//		}	
+		
+		
+		return varHtml;
+	}
+
+	private String getFieldVarHtml(String name, String type, String value,
+			String hasChanged, String hasJustInitialized) {
+		String fieldVarHtml;
+		if (hasJustInitialized.equals(TRUE)) {
+			fieldVarHtml = getFieldVarHighlightedLine(name, type, value, hasChanged);
 		} else {
-// TODO			
-		}	
-		
-		
+			fieldVarHtml = getFieldVarNoHighlitedLine(name, type, value, hasChanged);
+		}
+		return fieldVarHtml;
+	}
+
+	private String getFieldVarNoHighlitedLine(String name, String type,
+			String value, String hasChanged) {
+		String fieldVarLine;
+		if (hasChanged.equals(TRUE)) {
+			fieldVarLine = getFieldVarNoHighlitedLineHighlightedCell(name, type, value);
+		} else {
+			fieldVarLine = getFieldVarNoHighlitedLineNoHighlightedCell(name, type, value);
+		}
+		return fieldVarLine;
+	}
+
+	private String getFieldVarHighlightedLine(String name, String type,
+			String value, String hasChanged) {
+		String fieldVarLine;
+		if (hasChanged.equals(TRUE)) {
+			fieldVarLine = getFieldVarHighlitedLineHighlightedCell(name, type, value);
+		} else {
+			fieldVarLine = getFieldVarHighlitedLineNoHighlightedCell(name, type, value);
+		}
+		return fieldVarLine;
+	}
+
+	private String getFieldVarHighlitedLineNoHighlightedCell(String name,
+			String type, String value) {
+		String varHtml = String.format(varFieldHtmlTemplate, highlightLine, type, name, value);	
+		return varHtml;
+	}
+
+	private String getFieldVarHighlitedLineHighlightedCell(String name,
+			String type, String value) {
+		String varHtml = String.format(varHighlightCellFieldHtmlTemplate, highlightLine, type, name, value);
+		return varHtml;
+	}
+
+	private String getFieldVarNoHighlitedLineNoHighlightedCell(String name, String type,
+			String value) {
+		String varHtml = String.format(varFieldHtmlTemplate, notHighlightLine, type, name, value);	
+		return varHtml;
+	}
+
+	private String getFieldVarNoHighlitedLineHighlightedCell(String name, String type,
+			String value) {
+		String varHtml = String.format(varHighlightCellFieldHtmlTemplate, notHighlightLine, type, name, value);
+		return varHtml;
+	}
+	
+	private String getStackVarHtml(String name, String type, String value,
+			String hasChanged, String hasJustInitialized) {	
+		String stackVarHtml;
+		if (hasJustInitialized.equals(TRUE)) {
+			stackVarHtml = getStackVarHighlightedLine(name, type, value, hasChanged);
+		} else {
+			stackVarHtml = getStackVarNoHighlitedLine(name, type, value, hasChanged);
+		}
+		return stackVarHtml;
+	}
+
+	private String getStackVarNoHighlitedLine(String name, String type, String value,
+			String hasChanged) {
+		String stackVarLine;
+		if (hasChanged.equals(TRUE)) {
+			stackVarLine = getStackVarNoHighlitedLineHighlightedCell(name, type, value);
+		} else {
+			stackVarLine = getStackVarNoHighlitedLineNoHighlightedCell(name, type, value);
+		}
+		return stackVarLine;
+	}
+
+	private String getStackVarHighlightedLine(String name, String type,
+			String value, String hasChanged) {
+		String stackVarLine;
+		if (hasChanged.equals(TRUE)) {
+			stackVarLine = getStackVarHighlitedLineHighlightedCell(name, type, value);
+		} else {
+			stackVarLine = getStackVarHighlitedLineNoHighlightedCell(name, type, value);
+		}
+		return stackVarLine;
+	}
+
+	private String getStackVarNoHighlitedLineNoHighlightedCell(String name, String type,
+			String value) {
+		String varHtml = String.format(varStackHtmlTemplate, notHighlightLine, type, name, value);
+		return varHtml;
+	}
+
+	private String getStackVarNoHighlitedLineHighlightedCell(String name, String type,
+			String value) {
+		String varHtml = String.format(varHighlightCellStackHtmlTemplate, notHighlightLine, type, name, value);
+		return varHtml;
+	}
+
+	private String getStackVarHighlitedLineNoHighlightedCell(String name,
+			String type, String value) {
+		String varHtml = String.format(varStackHtmlTemplate, highlightLine, type, name, value);
+		return varHtml;
+	}
+
+	private String getStackVarHighlitedLineHighlightedCell(String name,
+			String type, String value) {
+		String varHtml = String.format(varHighlightCellStackHtmlTemplate, highlightLine, type, name, value);
+		return varHtml;
+	}
+
+	private String getHeapVarHtml(String name, String type, String value,
+			ArrayList<Variable> fields, String hasChanged,
+			String hasJustInitialized) {
+		String heapVarLine;
+		if (hasJustInitialized.equals(TRUE)) {
+			heapVarLine = getHeapVarHighlitedLine(name, type, value, fields, hasChanged);
+		} else {
+			heapVarLine = getHeapVarNoHighlitedLine(name, type, value, fields, hasChanged);
+		}
+		return heapVarLine;
+	}
+
+	private String getHeapVarNoHighlitedLine(String name, String type,
+			String value, ArrayList<Variable> fields, String hasChanged) {
+		String heapVarLine;
+		if (hasChanged.equals(TRUE)) {
+			heapVarLine = getHeapVarNoHighlitedLineHighlightedCell(name, type, value, fields);
+		} else {
+			heapVarLine = getHeapVarNoHighlitedLineNoHighlightedCell(name, type, value, fields);
+		}
+		return heapVarLine;
+	}
+
+	private String getHeapVarHighlitedLine(String name, String type,
+			String value, ArrayList<Variable> fields, String hasChanged) {
+		String heapVarLine;
+		if (hasChanged.equals(TRUE)) {
+			heapVarLine = getHeapVarHighlitedLineHighlightedCell(name, type, value, fields);
+		} else {
+			heapVarLine = getHeapVarHighlitedLineNoHighlightedCell(name, type, value, fields);
+		}
+		return heapVarLine;
+	}
+
+	private String getHeapVarNoHighlitedLineNoHighlightedCell(String name,
+			String type, String value, ArrayList<Variable> fields) {
+		String varHtml = String.format(varHtmlTemplate, notHighlightLine, type, name, value, fields)+ varHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
+		return varHtml;
+	}
+
+	private String getHeapVarNoHighlitedLineHighlightedCell(String name,
+			String type, String value, ArrayList<Variable> fields) {
+		String varHtml = String.format(varHighlightCellHtmlTemplate, notHighlightLine, type, name, value, fields)+ varHighlightCellHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
+		return varHtml;
+	}
+
+	private String getHeapVarHighlitedLineNoHighlightedCell(String name,
+			String type, String value, ArrayList<Variable> fields) {
+		String varHtml = String.format(varHtmlTemplate, highlightLine, type, name, value, fields)+ varHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
+		return varHtml;
+	}
+
+	private String getHeapVarHighlitedLineHighlightedCell(String name,
+			String type, String value, ArrayList<Variable> fields) {
+		String varHtml = String.format(varHighlightCellHtmlTemplate, highlightLine, type, name, value, fields)+ varHighlightCellHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
 		return varHtml;
 	}
 

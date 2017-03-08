@@ -36,6 +36,7 @@ public class Variable implements Comparable<Variable>{
 		this.value = value;
 		this.fields = parseFields(fields); 
 		this.hasValueChanged = hasValueChanged;
+		this.hasJustInitialized = "false";
 	}
 	
 	private ArrayList<Variable> parseFields(String fieldsString) {
@@ -206,6 +207,22 @@ public class Variable implements Comparable<Variable>{
 
 		try {
 			varVariables = var.getValue().getVariables();
+
+// TODO collections we want to see their elements			
+//			
+//			if (isCollection(var)) {
+//				IVariable[] vars = var.getValue().getVariables();
+//				for (IVariable varColl: vars) {
+//					if (varColl.getName().equals("elementData") &&
+//							varColl.getReferenceTypeName().equals("java.lang.Object[]")) {
+//						varVariables = varColl.getValue().getVariables();
+//					}
+//				}
+//			}
+//			
+			
+			
+		
 			if (varVariables != null && varVariables.length > 0 ) {
 			ArrayList<IVariable> fieldsList = new ArrayList<IVariable>(Arrays.asList(varVariables));
 
@@ -272,6 +289,19 @@ public class Variable implements Comparable<Variable>{
 
 	public void setHasJustInitialized(boolean b) {
 		this.hasJustInitialized = b + "";
+	}
+	
+	private static boolean isCollection(IVariable var) {
+		try {
+		String type = var.getReferenceTypeName();
+		if (type.contains("List") || type.contains("Set") 
+				|| type.contains("Map") || type.contains("[]")) {
+			return true;
+			}
+		} catch (DebugException e) {
+			 e.printStackTrace();
+		 }
+		return false;
 	}
 	
 }

@@ -51,6 +51,9 @@ public class StackFrame {
 		}
 		String className = null;
 		VirtualMachine jvm = DebugEventListener.getJVM(frame);
+		
+		
+		
 		List<ThreadReference> threads = jvm.allThreads();
 		for (ThreadReference thread: threads) {
 			try {
@@ -59,6 +62,8 @@ public class StackFrame {
 
 				if (frames.size() > frameNum) {
 					com.sun.jdi.StackFrame fr = frames.get(frameNum);
+					
+					
 					Method method = fr.location().method();
 					if (frameName.equals(method.name())) {
 						className = method.declaringType().name();

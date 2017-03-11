@@ -10,7 +10,11 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
+
+import com.sun.jdi.VirtualMachine;
+
 
 /**
  * The Variable class stores information about variables 
@@ -178,7 +182,7 @@ public class Variable implements Comparable<Variable>{
 	
 	
 	private static Map<String, String> getVarNameValueTypeFields(IVariable var) {
-		Map<String, String> varMap = getVarNameValueType(var);
+		Map<String, String> varMap = getVarNameValueType(var, "");
 		varMap.put(KEY + FIELDS.toUpperCase(), getVarFields(var));
 	
 		return varMap;
@@ -221,14 +225,18 @@ public class Variable implements Comparable<Variable>{
 //			}
 //			
 			
+
 			
-		
 			if (varVariables != null && varVariables.length > 0 ) {
 			ArrayList<IVariable> fieldsList = new ArrayList<IVariable>(Arrays.asList(varVariables));
 
 	
-			for (IVariable fieldVar: fieldsList) {
-				Map<String, String> varMap = getVarNameValueType(fieldVar);
+			for (IVariable fieldVar: fieldsList) { 
+				
+				// Check if field is inherited
+				String declaringType = getDeclaringType(fieldVar); 
+			
+				Map<String, String> varMap = getVarNameValueType(fieldVar, declaringType);
 				for (java.util.Map.Entry<String, String> entry: varMap.entrySet()) {
 					fields = fields + entry.getKey() + " " + entry.getValue() + " ";
 				}
@@ -242,12 +250,19 @@ public class Variable implements Comparable<Variable>{
 		return fields;	
 	}
 
-	private static Map<String, String> getVarNameValueType(IVariable var) {
+	private static String getDeclaringType(IVariable fieldVar) {
+		String declaringType = "";
+		declaringType = declaringType + "."; 
+//		VirtualMachine jvm = DebugEventListener.getJVM();
+		return "";
+	}
+
+	private static Map<String, String> getVarNameValueType(IVariable var, String declaringType) {
 		Map<String, String> varMap  = new HashMap<String, String>();		
 		String varName;
 		try {
 			varName = var.getName().toString();
-			varMap.put(KEY + NAME.toUpperCase(), varName);
+			varMap.put(KEY + NAME.toUpperCase(), declaringType + varName);
 			String varValue = var.getValue().toString();
 			varMap.put(KEY + VALUE.toUpperCase(), varValue);
 			String varType = var.getReferenceTypeName();
@@ -255,7 +270,7 @@ public class Variable implements Comparable<Variable>{
 			String hasValueChanged  = var.hasValueChanged() + "";
 			varMap.put(KEY + HAS_VALUE_CHANGED.toUpperCase(), hasValueChanged);
 		} catch (DebugException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		return varMap;
 	}

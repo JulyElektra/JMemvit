@@ -39,7 +39,8 @@ public class Heap {
 	}
 	
 	/*
-	 * This method removes all duplicated objects from ArrayList
+	 * This method removes all duplicated objects from ArrayList. 
+	 * It is used to remove duplicates in Heap
 	 */	
 	private ArrayList<IVariable> removeDuplicates(ArrayList<IVariable> listOfVariables){
 		ArrayList<IVariable> listNoDuplicates = new ArrayList<IVariable>();
@@ -51,18 +52,22 @@ public class Heap {
 		for (int j = 0; j < listNoDuplicates.size(); j++) {
 			IVariable v = listNoDuplicates.get(j);
 			try {
-				if (v.getName().toString() == "this") {
+				//if (v.getName().toString() == "this") {
 					for (int i = 0; i < listNoDuplicates.size(); i++) {
 						IVariable vCompare = listNoDuplicates.get(i);
 						if (!vCompare.equals(v)) {
 							String vCompareValue = vCompare.getValue().toString();
 							String vValue = v.getValue().toString();
-							if (vCompareValue.equals(vValue)) {
+							
+							String vCompareType = vCompare.getReferenceTypeName();
+							String vType = v.getReferenceTypeName();
+							
+							if (vCompareValue.equals(vValue) && vCompareType.equals(vType)) {
 								listNoDuplicates.remove(v);
 							}
 						}
 					}
-				}
+				//}
 			} catch (DebugException e) {
 				e.printStackTrace();
 			}

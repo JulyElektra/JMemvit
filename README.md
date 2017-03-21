@@ -1,6 +1,6 @@
 # JMemvit (Java memory visualisation tool for novice programmers)
 
-In order to use the pluggin, you need:
+In order to use the plugin, you need:
 1. Download the last version of JAR file from the folder https://goo.gl/7GI8jS
 2. Copy it in Eclipse folder : dropins
 3. Restart Eclipse application

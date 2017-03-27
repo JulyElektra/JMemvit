@@ -54,8 +54,11 @@ public class JsonBuilder {
 	 */
 	private Map<String, Object> getHeapMap(Heap heap) {
 		ArrayList<IVariable> vars = heap.getHeap();
+		ArrayList<IVariable> fields = Variable.getFields(vars);
+		ArrayList<IVariable> fieldsObjects = Variable.getObjectsFromVars(fields);
+		vars.addAll(fieldsObjects);
 		Map<String, Object> varsMap = new HashMap<String, Object>();
-		ArrayList<Map<String, String>> varsList = Variable.getVarsList(vars);
+		ArrayList<Map<String, String>> varsList = Variable.getVarsList(vars);		
 		varsMap.put(VARIABLES, varsList);	
 		Map<String, Object> heapMap = new HashMap<String, Object>();
 		heapMap.put(HEAP, varsMap);

@@ -14,6 +14,7 @@ import java.util.Scanner;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
+import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.swt.SWTException;
 
@@ -398,6 +399,33 @@ public class Variable implements Comparable<Variable>{
 			 e.printStackTrace();
 		 }
 		return false;
+	}
+
+	public static ArrayList<IVariable> getObjectsFromVars(
+			ArrayList<IVariable> vars) {
+		ArrayList<IVariable> fieldsObjects = new ArrayList<IVariable>();
+		for (IVariable var: vars) {
+			if (isObjectType(var)) {
+				fieldsObjects.add(var);
+			}
+		}
+		return fieldsObjects;
+	}
+
+	public static ArrayList<IVariable> getFields(ArrayList<IVariable> vars) {
+		ArrayList<IVariable> fields = new ArrayList<IVariable>();
+		for (IVariable var: vars) {
+			IValue v;
+			try {
+				v = var.getValue();
+				if (v != null) {
+					fields.addAll(Arrays.asList(v.getVariables()));
+				}				
+			} catch (DebugException e) {
+				e.printStackTrace();
+			}
+		}
+		return fields;
 	}
 	
 }

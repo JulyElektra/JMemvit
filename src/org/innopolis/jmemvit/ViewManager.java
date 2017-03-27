@@ -206,7 +206,7 @@ public class ViewManager extends ViewPart {
 						
 //			// TODO delete in the final version
 //			String jsonString = json.toString();
-//			MyFileWriter.write(jsonString);
+//			org.innopolis.jmemvit.temporal.MyFileWriter.write(jsonString);
 		}
 		else {
 			// There is no updates or nothing

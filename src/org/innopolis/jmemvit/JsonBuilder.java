@@ -103,7 +103,7 @@ public class JsonBuilder {
 			Map<String, Object> varsMap = new HashMap<String, Object>();
 			ArrayList<Map<String, String>> varsList = Variable.getVarsList(varsArrList);
 			varsMap.put(VARIABLES, varsList);			
-			frameMap.put((frameNum + " " + frameCalssName + "." + frameName).toString(), varsMap);
+			frameMap.put((frameNum + " " + frameCalssName + "." + frameName  + "(...)").toString(), varsMap);
 		}
 		Map<String, Object> stackMap = new HashMap<String, Object>();
 		stackMap.put(STACK, frameMap);

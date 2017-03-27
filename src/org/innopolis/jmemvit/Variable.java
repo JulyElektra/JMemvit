@@ -2,17 +2,23 @@ package org.innopolis.jmemvit;
 
 import static org.innopolis.jmemvit.Global.*;
 
+import java.io.IOException;
+import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
+import org.eclipse.swt.SWTException;
 
+import com.sun.jdi.Field;
+import com.sun.jdi.ObjectReference;
 import com.sun.jdi.VirtualMachine;
 
 
@@ -27,7 +33,7 @@ public class Variable implements Comparable<Variable>{
 	private String value;
 	private String hasValueChanged;
 	private String hasJustInitialized;
-	private ArrayList<Variable> fields = new ArrayList<Variable>();
+	private ArrayList<Variable> fields = new ArrayList<Variable>();;
 	
 	
 	/**
@@ -182,7 +188,7 @@ public class Variable implements Comparable<Variable>{
 	
 	
 	private static Map<String, String> getVarNameValueTypeFields(IVariable var) {
-		Map<String, String> varMap = getVarNameValueType(var, "");
+		Map<String, String> varMap = getVarNameValueType(var);
 		varMap.put(KEY + FIELDS.toUpperCase(), getVarFields(var));
 	
 		return varMap;
@@ -207,10 +213,55 @@ public class Variable implements Comparable<Variable>{
 		if (isString(var)) {
 			return fields;
 		}
-		IVariable[] varVariables;
+		HashMap<ObjectReference, List<Field>> varFields = getVarFieldsList(var);
+		
+		if (varFields == null) {
+			return fields;
+		}
+		
+		for (HashMap.Entry<ObjectReference, List<Field>> entry: varFields.entrySet()) {
+			ObjectReference obj = entry.getKey();
+			for (Field field: entry.getValue()) {
+				if(obj == null) {
+					break;
+				}
+				Map<String, String> varMap  = new HashMap<String, String>();
+				String declarType = field.declaringType() + "";
+				String varName = "";
+				try {
+					if (declarType.equals(var.getReferenceTypeName()) ){
+						varName = field.name();
+					} else {
+						varName = declarType + "." + field.name();
+					}
+				} catch (DebugException e1) {
+					e1.printStackTrace();
+				}
+				varMap.put(KEY + NAME.toUpperCase(), varName);
+				try {
+					String varValue = obj.getValue(field) + "";
+					varMap.put(KEY + VALUE.toUpperCase(), varValue);
+				} catch (SWTException e) {
+					e.printStackTrace();
+				}
+				
+				String varType = field.typeName();
+				varMap.put(KEY + TYPE.toUpperCase(), varType);
+				String hasValueChanged  = FALSE;
+				varMap.put(KEY + HAS_VALUE_CHANGED.toUpperCase(), hasValueChanged);
+	
+		
+				for (java.util.Map.Entry<String, String> mapEntry: varMap.entrySet()) {
+					fields = fields + mapEntry.getKey() + " " + mapEntry.getValue() + " ";
+				}
+				fields = fields + " ; ";
+			}
+		}
 
-		try {
-			varVariables = var.getValue().getVariables();
+		
+//TODO fast solution
+//		try {
+//			varVariables = var.getValue().getVariables();
 
 // TODO collections we want to see their elements			
 //			
@@ -224,45 +275,70 @@ public class Variable implements Comparable<Variable>{
 //				}
 //			}
 //			
-			
-
-			
-			if (varVariables != null && varVariables.length > 0 ) {
-			ArrayList<IVariable> fieldsList = new ArrayList<IVariable>(Arrays.asList(varVariables));
-
 	
-			for (IVariable fieldVar: fieldsList) { 
-				
-				// Check if field is inherited
-				String declaringType = getDeclaringType(fieldVar); 
-			
-				Map<String, String> varMap = getVarNameValueType(fieldVar, declaringType);
-				for (java.util.Map.Entry<String, String> entry: varMap.entrySet()) {
-					fields = fields + entry.getKey() + " " + entry.getValue() + " ";
-				}
-				fields = fields + " ; ";
-			}
-		}
-		} catch (DebugException e) {
-			e.printStackTrace();
-		}
+		
+
+//TODO fast solution			
+//			if (varVariables != null && varVariables.length > 0 ) {
+//			ArrayList<IVariable> fieldsList = new ArrayList<IVariable>(Arrays.asList(varVariables));
+//
+//					
+//			for (IVariable fieldVar: fieldsList) { 
+//				
+//				// Check if field is inherited
+//				String declaringType = getDeclaringType(var, fieldVar); 
+//			
+//				Map<String, String> varMap = getVarNameValueType(fieldVar, declaringType);
+//				for (java.util.Map.Entry<String, String> entry: varMap.entrySet()) {
+//					fields = fields + entry.getKey() + " " + entry.getValue() + " ";
+//				}
+//				fields = fields + " ; ";
+//			}
+//		}
+//		} catch (DebugException e) {
+//			e.printStackTrace();
+//		}
 		
 		return fields;	
 	}
 
-	private static String getDeclaringType(IVariable fieldVar) {
-		String declaringType = "";
-		declaringType = declaringType + "."; 
-//		VirtualMachine jvm = DebugEventListener.getJVM();
-		return "";
+	private static HashMap<ObjectReference, List<Field>> getVarFieldsList(IVariable var) {
+		HashMap<ObjectReference, List<Field>> varFields = new HashMap<ObjectReference, List<Field>>();
+		try {
+			String varValue = var.getValue().getValueString();
+			Long id = parseID (varValue);
+			if (id == null) {
+				return null;
+			}
+			ObjectReference obj = DebugEventListener.getObjectRef(id);
+			if (obj == null) {
+				return null;
+			}
+			varFields.put(obj, obj.referenceType().allFields());
+		} catch (DebugException e) {
+			e.printStackTrace();
+		}
+		return varFields;
 	}
 
-	private static Map<String, String> getVarNameValueType(IVariable var, String declaringType) {
+
+	private static Long parseID(String value)  {
+		Long id = null;
+		try {
+			id = Long.parseLong(value.replaceAll("[^0-9]", ""));
+		} catch (NumberFormatException e) {
+//			e.printStackTrace();
+		}
+		
+		return id;
+	}
+
+	private static Map<String, String> getVarNameValueType(IVariable var) {
 		Map<String, String> varMap  = new HashMap<String, String>();		
 		String varName;
 		try {
 			varName = var.getName().toString();
-			varMap.put(KEY + NAME.toUpperCase(), declaringType + varName);
+			varMap.put(KEY + NAME.toUpperCase(), varName);
 			String varValue = var.getValue().toString();
 			varMap.put(KEY + VALUE.toUpperCase(), varValue);
 			String varType = var.getReferenceTypeName();
@@ -284,9 +360,14 @@ public class Variable implements Comparable<Variable>{
 	}
 
 	@Override
-	public int compareTo(Variable v) {
+	public int compareTo(Variable v) { 
 		String thisType = this.getType();
 		String varType = v.getType();
+		if (thisType.equals(varType)) {
+			String thisName = this.getName();
+			String varName = v.getName();
+			return thisName.compareTo(varName);
+		}
 		return thisType.compareTo(varType);
 	}
 	

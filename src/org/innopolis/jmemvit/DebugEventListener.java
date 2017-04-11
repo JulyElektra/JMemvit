@@ -1,22 +1,17 @@
 package org.innopolis.jmemvit;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStackFrame;
-import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.jdt.internal.debug.core.model.JDIDebugTarget;
 
-import com.sun.jdi.ClassLoaderReference;
-import com.sun.jdi.Field;
 import com.sun.jdi.ObjectReference;
 import com.sun.jdi.ReferenceType;
-import com.sun.jdi.Value;
 import com.sun.jdi.VirtualMachine;
 
 /**
@@ -26,7 +21,8 @@ public class DebugEventListener implements IDebugEventSetListener{
 
 	private IJavaThread currentThread; 
 	private boolean itIsUpdatedThread;
-	private static HashMap<Long, ObjectReference> objects = new HashMap<Long, ObjectReference>();
+//	private static HashMap<Long, ObjectReference> objects = new HashMap<Long, ObjectReference>();
+	private static ObjectReference[] objects = new ObjectReference[10000];
 	
 	/**
 	 * The constructor
@@ -75,23 +71,20 @@ public class DebugEventListener implements IDebugEventSetListener{
 				JVM = DebugTarget.getVM();
 				
 				
-
+//				Date start = new Date();
+//				System.out.println(start.getTime());
+				
 				
 				List<ReferenceType> classes = JVM.allClasses();
+
+				
+
+				
 				for (ReferenceType Class: classes) {
 					String className = Class.name();
 					boolean print = true;
-//					if (className.contains("java.")){print = false;}
-//					if (className.contains("sun.")){print = false;}
-//					if (className.contains("short[]")){print = false;}
-//					if (className.contains("long[]")){print = false;}
-//					if (className.contains("boolean[]")){print = false;}
-//					if (className.contains("byte[]")){print = false;}
-//					if (className.contains("byte[][]")){print = false;}
-//					if (className.contains("char[]")){print = false;}
-//					if (className.contains("double[]")){print = false;}
-//					if (className.contains("float[]")){print = false;}
-//					if (className.contains("int[]")){print = false;}
+					print = Variable.isNotSkippedClasses(className);
+
 									
 //					if (.contains(className)){print = false;}
 					
@@ -102,7 +95,7 @@ public class DebugEventListener implements IDebugEventSetListener{
 							break;
 						} else {
 							for (ObjectReference o: classObjects) {
-								objects.put(o.uniqueID(), o);
+								objects[(int) o.uniqueID()] = o;
 							}
 							
 						}
@@ -124,6 +117,11 @@ public class DebugEventListener implements IDebugEventSetListener{
 
 					
 				} 
+				
+//				Date finish = new Date();
+//				System.out.println(finish.getTime());
+//				Long dif = finish.getTime() - start.getTime();
+//				System.out.println("dif: " + dif + "; ");
 
 				break;
 			}						
@@ -131,7 +129,9 @@ public class DebugEventListener implements IDebugEventSetListener{
 		return JVM;
 	}
 	
-	public static ObjectReference getObjectRef(Long id) {
-		return objects.get(id);
+	public static ObjectReference getObjectRef(long id) {
+//		return objects.get(id);
+		int id_ = (int) id;
+		return objects[id_];
 	}
 }

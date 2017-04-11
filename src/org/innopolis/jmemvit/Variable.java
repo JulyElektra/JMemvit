@@ -3,6 +3,8 @@ package org.innopolis.jmemvit;
 import static org.innopolis.jmemvit.Global.*;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,9 +19,16 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.swt.SWTException;
+import org.junit.internal.runners.MethodValidator;
 
+import com.sun.jdi.ClassNotLoadedException;
 import com.sun.jdi.Field;
+import com.sun.jdi.IncompatibleThreadStateException;
+import com.sun.jdi.InvalidTypeException;
+import com.sun.jdi.InvocationException;
 import com.sun.jdi.ObjectReference;
+import com.sun.jdi.ThreadReference;
+import com.sun.jdi.Value;
 import com.sun.jdi.VirtualMachine;
 
 
@@ -222,7 +231,7 @@ public class Variable implements Comparable<Variable>{
 		
 		for (HashMap.Entry<ObjectReference, List<Field>> entry: varFields.entrySet()) {
 			ObjectReference obj = entry.getKey();
-			for (Field field: entry.getValue()) {
+			for (Field field: entry.getValue()) { 
 				if(obj == null) {
 					break;
 				}
@@ -346,6 +355,53 @@ public class Variable implements Comparable<Variable>{
 			varMap.put(KEY + TYPE.toUpperCase(), varType);
 			String hasValueChanged  = var.hasValueChanged() + "";
 			varMap.put(KEY + HAS_VALUE_CHANGED.toUpperCase(), hasValueChanged);
+			
+			
+//			System.out.println(varType + " " + varName + " " + varValue );
+//			if (isObjectType(var)) {
+//			Long id = parseID(varValue);
+//			if (id != null) {
+//				ObjectReference obj = DebugEventListener.getObjectRef(id);
+//				if (obj != null) {
+//					try {
+//						//obj.virtualMachine().suspend();
+//						Method[] methods = obj.getClass().getMethods();
+//						for (Method method: methods) {
+//
+//								//List<? extends Value> args = new ArrayList<Value>();
+//								int integ =  obj.INVOKE_SINGLE_THREADED;
+//								ThreadReference thread = null;
+//								try {
+//									thread = obj.owningThread();
+//								} catch (IncompatibleThreadStateException e1) {
+//									// TODO Auto-generated catch block
+//									e1.printStackTrace();
+//								}
+//								com.sun.jdi.Method methodd = obj.referenceType().methodsByName("toString").get(0);
+//								try {
+//									Value res = obj.invokeMethod(thread , methodd , null, integ);
+//									System.out.println("---" + res.toString());
+//								} catch (InvalidTypeException
+//										| ClassNotLoadedException
+//										| IncompatibleThreadStateException
+//										| InvocationException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//							System.out.println("---" + method.getName() + " param:" +  method.getParameters());
+//						}
+//						//obj.virtualMachine().resume();;
+//					} catch (IllegalArgumentException
+//							| SecurityException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					
+//					}
+//				}
+//			}
+			
+			
 		} catch (DebugException e) {
 //			e.printStackTrace();
 		}
@@ -405,6 +461,14 @@ public class Variable implements Comparable<Variable>{
 			ArrayList<IVariable> vars) {
 		ArrayList<IVariable> fieldsObjects = new ArrayList<IVariable>();
 		for (IVariable var: vars) {
+			
+//			try {
+//				System.out.println(var.getName() + ' ' + isObjectType(var));
+//			} catch (DebugException e) {
+//				e.printStackTrace();
+//			}
+			
+			
 			if (isObjectType(var)) {
 				fieldsObjects.add(var);
 			}
@@ -412,20 +476,39 @@ public class Variable implements Comparable<Variable>{
 		return fieldsObjects;
 	}
 
-	public static ArrayList<IVariable> getFields(ArrayList<IVariable> vars) {
+	public static ArrayList<IVariable> getFieldsOfVars(ArrayList<IVariable> vars) {
 		ArrayList<IVariable> fields = new ArrayList<IVariable>();
 		for (IVariable var: vars) {
 			IValue v;
-			try {
+			try {				
 				v = var.getValue();
-				if (v != null) {
-					fields.addAll(Arrays.asList(v.getVariables()));
-				}				
+				if (!isNotSkippedClasses(v.getReferenceTypeName())) {
+					continue;
+				}
+				fields.addAll(Arrays.asList(v.getVariables()));
+				
 			} catch (DebugException e) {
 				e.printStackTrace();
 			}
 		}
 		return fields;
+	}
+
+	public static boolean isNotSkippedClasses(String className) {
+		if (className.contains("java.util.ArrayList")) {return true;}
+		if (className.contains("java.")){return false;}
+		if (className.contains("sun.")){return false;}
+		if (className.contains("short[]")){return false;}
+		if (className.contains("long[]")){return false;}
+		if (className.contains("boolean[]")){return false;}
+		if (className.contains("byte[]")){return false;}
+		if (className.contains("byte[][]")){return false;}
+		if (className.contains("char[]")){return false;}
+		if (className.contains("double[]")){return false;}
+		if (className.contains("float[]")){return false;}
+		if (className.contains("int[]")){return false;}
+
+		return true;
 	}
 	
 }

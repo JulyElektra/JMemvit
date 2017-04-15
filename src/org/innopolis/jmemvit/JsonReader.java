@@ -17,7 +17,6 @@ import org.json.JSONObject;
  */
 public class JsonReader {
 	
-	private ArrayList<State> listOfStates;
 	private JSONObject json;
 
 	/**
@@ -25,7 +24,6 @@ public class JsonReader {
 	 */
 	public JsonReader(JSONObject json) {
 		this.json = json;
-		this.listOfStates = new ArrayList<State>();
 	}
 	
 	/*
@@ -33,6 +31,7 @@ public class JsonReader {
 	 * extracted from the JSON
 	 */
 	public ArrayList<State> read() {
+		ArrayList<State> listOfStates = new ArrayList<State>();
 		ArrayList<String> timeList = getSortedTimeList();
 		for (String time: timeList) {
 			State state = getState(time);
@@ -40,11 +39,11 @@ public class JsonReader {
 				listOfStates.add(state);
 			}
 		}
-		setJustInitializedVars();
+		setJustInitializedVars(listOfStates);
 		return listOfStates;
 	}
 	
-	private void setJustInitializedVars() {
+	private void setJustInitializedVars(ArrayList<State> listOfStates) {
 		for (int stateNum = 0; stateNum < listOfStates.size(); stateNum ++) {
 			State stateCurrent = listOfStates.get(stateNum);
 			ArrayList<Variable> variablesJustInitialized = new ArrayList<Variable>();

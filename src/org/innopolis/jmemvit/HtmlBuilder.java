@@ -5,8 +5,6 @@ import static org.innopolis.jmemvit.Global.*;
 import java.util.ArrayList;
 
 public class HtmlBuilder {
-	private State state;
-
 	
 	// Parameter "Stack" or "Heap"
 	private static final String heapHeader = "<td width=\"50%\" style=\"vertical-align: top;\"><div><strong>Heap:</strong></div>";
@@ -32,11 +30,8 @@ public class HtmlBuilder {
 			+ "	<td width=\"55%\">"
 			+ "<table width=\"100%\"> "
 			+ "<tbody>"
-//			+ "<tr style=\"text-align: left;background-color: #00CED1;\">"
 			+ "<tr border=\"1\" style =\"border: 1px solid #000000;border-collapse: collapse; border-color:#000000;\">"
-//			+ "<td></td>"
 			+ "<td  style=\"text-align: left;background-color: #00CED1;font-weight: bold;\" colspan=\"3\"> Fields  </td>"
-//			+ "<td></td>"
 			+ "</tr>"
 			+ "<tr>"
 			+ "<td>Type</td>"
@@ -115,14 +110,13 @@ public class HtmlBuilder {
 	/**
 	 * The constructor
 	 */
-	public HtmlBuilder(State state) {
-		this.state = state;
+	public HtmlBuilder() {
 	}
 
 	/*
 	 * The method returns HTML string for the state
 	 */
-	public String getHtmlString() {
+	public String getHtmlString(State state) {
 		StackFrameStrings stack = state.getStack();
 		HeapStrings heap = state.getHeap();
 		String htmlString = build(stack, heap);
@@ -199,29 +193,6 @@ public class HtmlBuilder {
 		} else if (partOfVizualization.equals(FIELDS)) {
 			varHtml = getFieldVarHtml(name, type, value, hasChanged, hasJustInitialized);
 		}
-		
-//// TODO		
-//		if (hasChanged.equals("true")) {
-//			if (partOfVizualization.equals(HEAP)) {
-//				varHtml = String.format(varHighlightCellHtmlTemplate, type, name, value, fields)+ varHighlightCellHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
-//			} else if (partOfVizualization.equals(STACK)){
-//				varHtml = String.format(varHighlightCellStackHtmlTemplate, type, name, value);
-//			} else {
-//				varHtml = String.format(varHighlightCellFieldHtmlTemplate, type, name, value);
-//			}
-//		} else if (hasChanged.equals("false")) {			
-//			if (partOfVizualization.equals(HEAP)) {
-//				varHtml = String.format(varHtmlTemplate, type, name, value, fields)+ varHeapHtmlTemplate + getFieldsHtml(fields) + tableFieldsFooter;
-//			} else if (partOfVizualization.equals(STACK)){
-//				varHtml = String.format(varStackHtmlTemplate, type, name, value);
-//			} else {
-//				varHtml = String.format(varFieldHtmlTemplate, type, name, value);	
-//			}
-//		} else {
-//// TODO			
-//		}	
-		
-		
 		return varHtml;
 	}
 

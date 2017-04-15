@@ -1,8 +1,5 @@
 package org.innopolis.jmemvit;
 
-import java.util.ArrayList;
-
-
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IStackFrame;
@@ -26,17 +23,14 @@ public class ViewManager extends ViewPart {
 
 	private DebugEventListener jdiEventListener;
 	private Browser browser;
-	private JsonBuilder jsonBuilder;
-	private State currentState;
-	private int currentStateNumber;
+	private JsonStorage jsonStorage;
 
 	
 	/**
 	 * The constructor
 	 */
 	public ViewManager() {
-		this.jsonBuilder = new JsonBuilder();
-		this.currentStateNumber = 1;
+		jsonStorage = new JsonStorage();
 	}
 	
 	/**
@@ -44,9 +38,7 @@ public class ViewManager extends ViewPart {
 	 */
 	public ViewManager(DebugEventListener listener, Browser browser) {
 		this.jdiEventListener = listener;
-		this.jsonBuilder = new JsonBuilder();
 		this.browser = browser;
-		this.currentStateNumber = 1;
 	}
 
 	class RunnableForThread implements Runnable{
@@ -107,21 +99,7 @@ public class ViewManager extends ViewPart {
 		browser.setText("<html><body>Stack and heap will appear here.Please, start debugging.</body></html>");
 
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-//        NavigationHistoryAction a = new NavigationHistoryAction(window , true);
-//
-//        
-//        IWorkbenchPage page = a.getActivePage();
-        //IEditorPart editor = (IEditorPart) page.getNavigationHistory();
-        //( input, MyEditor.ID );
-        //page.getNavigationHistory().markLocation( editor );
-        
-//        IEditorPart editor = window.getActivePage().getActiveEditor();
-//        INavigationHistory nh = window.getActivePage().getNavigationHistory();
-//        nh.markLocation(editor);
-//        INavigationLocation location =  nh.getCurrentLocation();
-//        locations.add(location);
-//        currentLocationID = locations.size() - 1;
-        
+       
         
         IAction backward = ActionFactory.BACKWARD_HISTORY.create( window );
         backward.setId( IWorkbenchCommandConstants.NAVIGATE_BACKWARD_HISTORY );
@@ -130,34 +108,18 @@ public class ViewManager extends ViewPart {
         forward.setId( IWorkbenchCommandConstants.NAVIGATE_FORWARD_HISTORY );
 
 
-        //IToolBarManager navigation = new ToolBarManager( SWT.FLAT );
-        //navigation.add(backward);
-        //navigation.add(forward);
-
 		backButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
-		        back();	
-//		        int priviousLocation = currentLocationID - 1;
-//		        int firstLocation = 0;
-//		        if (priviousLocation < firstLocation) {
-//		        	 priviousLocation = firstLocation;
-//		        }
-//		        locations.get(priviousLocation).restoreLocation();
-		        
+		        jsonStorage.back();
+		        visualizeCurrentState();
 		        backward.run();	         
 	        }
 	      });
 	    
 		forwardButton.addListener(SWT.Selection, new Listener() {
 	         public void handleEvent(Event event) {
-		         forward();
-//		         int nextLocation = currentLocationID + 1;
-//		         int lastLocation = locations.size() - 1;
-//		         if (nextLocation > lastLocation) {
-//		        	 nextLocation = lastLocation;
-//		         }
-//		         locations.get(nextLocation).restoreLocation();
-		         
+	        	 jsonStorage.forward();       
+	        	 visualizeCurrentState();
 		         forward.run();
 	         }     
 	      });
@@ -173,17 +135,7 @@ public class ViewManager extends ViewPart {
 	}
 	
 
-	protected void forward() {
-		if (currentStateNumber > 1) {
-			currentStateNumber--;
-		}
-		visualizeCurrentState(jsonBuilder.getJson());
-	}
 
-	protected void back() {
-		currentStateNumber++;
-		visualizeCurrentState(jsonBuilder.getJson());
-	}
 
 	@Override
 	public void setFocus() {
@@ -198,11 +150,14 @@ public class ViewManager extends ViewPart {
 		if (hasEventUpdates()) {			
 			IStackFrame[] frames = getActualStackFrames();
 			
+			JsonBuilder jsonBuilder = new JsonBuilder();
 			// Writing data in JSON
-			JSONObject json = jsonBuilder.addInJson(frames);
+			JSONObject json = jsonBuilder.getJson(frames);
+			jsonStorage.addToJson(json);
 			
-			currentStateNumber = 1;
-			visualizeCurrentState(json);
+			
+			jsonStorage.setCurrentStateNumber(1);
+			visualizeCurrentState();
 						
 //			// TODO delete in the final version
 //			String jsonString = json.toString();
@@ -214,45 +169,17 @@ public class ViewManager extends ViewPart {
 		}
 	}
 
-	private void visualizeCurrentState(JSONObject json) {
-		// Reading from JSON information about the current state
-		currentState = getCurrentState(json);
-		
-		if (currentState != null){	
-			
-			// Building HTML format string with data
-			String currentStateHTML = getStateHTML(currentState);
-					
-			// Visualization
-			visualize(currentStateHTML);
-		}	
-	}
+
 
 	/*
 	 * Method gets HTML string from the state
 	 */	
 	private String getStateHTML(State state) {
-		HtmlBuilder htmlBuilder = new HtmlBuilder(state);		
-		return htmlBuilder.getHtmlString();
+		HtmlBuilder htmlBuilder = new HtmlBuilder();		
+		return htmlBuilder.getHtmlString(state);
 	}
 
-	/*
-	 * Method gets the last (current) state of stack and heap from JSON
-	 */
-	private State getCurrentState(JSONObject json) {
-		JsonReader jsonReader = new JsonReader(json);
-		ArrayList<State> states = jsonReader.read();	
-		if (states.isEmpty()) {
-			return null;
-		}
-		int current = states.size() - currentStateNumber;
-		if (current < 0) {
-			currentStateNumber--;
-			current++;
-		}
-		State currentState = states.get(current);
-		return currentState;	
-	}
+
 
 	/*
 	 * Method visualizes particular element
@@ -308,5 +235,19 @@ public class ViewManager extends ViewPart {
 			return false;
 		}		
 	}	
+	
+	private void visualizeCurrentState() {
+		// Reading from JSON information about the current state
+		State currentState = jsonStorage.getCurrentState();
+		
+		if (currentState != null){	
+			
+			// Building HTML format string with data
+			String currentStateHTML = getStateHTML(currentState);
+					
+			// Visualization
+			visualize(currentStateHTML);
+		}	
+	}
 	
 }

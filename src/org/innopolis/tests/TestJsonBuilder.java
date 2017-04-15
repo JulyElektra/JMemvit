@@ -11,6 +11,6 @@ public class TestJsonBuilder {
 	public void test1() {
 		JsonBuilder builder = new JsonBuilder();
 		MockIStackFrame[] frames = {new MockIStackFrame(), new MockIStackFrame(), new MockIStackFrame(), new MockIStackFrame(),new MockIStackFrame(),new MockIStackFrame()};
-		JSONObject json = builder.addInJson(frames);		
+		JSONObject json = builder.getJson(frames);		
 	}
 }

@@ -1,6 +1,5 @@
 package org.innopolis.jmemvit;
 
-import java.util.Date;
 import java.util.List;
 
 import org.eclipse.debug.core.DebugEvent;
@@ -21,7 +20,6 @@ public class DebugEventListener implements IDebugEventSetListener{
 
 	private IJavaThread currentThread; 
 	private boolean itIsUpdatedThread;
-//	private static HashMap<Long, ObjectReference> objects = new HashMap<Long, ObjectReference>();
 	private static ObjectReference[] objects = new ObjectReference[10000];
 	
 	/**
@@ -68,26 +66,16 @@ public class DebugEventListener implements IDebugEventSetListener{
 		for (Object child : LaucnChildren){
 			if (child instanceof org.eclipse.jdt.internal.debug.core.model.JDIDebugTarget){
 				JDIDebugTarget DebugTarget = (JDIDebugTarget) child;
-				JVM = DebugTarget.getVM();
-				
-				
-//				Date start = new Date();
-//				System.out.println(start.getTime());
-				
-				
+				JVM = DebugTarget.getVM();			
+			
 				List<ReferenceType> classes = JVM.allClasses();
-
-				
-
 				
 				for (ReferenceType Class: classes) {
 					String className = Class.name();
 					boolean print = true;
 					print = Variable.isNotSkippedClasses(className);
 
-									
-//					if (.contains(className)){print = false;}
-					
+				
 					if (!print){continue;}	
 					
 					List<ObjectReference> classObjects = Class.instances(0);
@@ -99,29 +87,8 @@ public class DebugEventListener implements IDebugEventSetListener{
 							}
 							
 						}
-//						for (ObjectReference obj: objects) {
-//							List<Field> fields = class_.allFields();
-//							for (Field field: fields) {
-//								if ((field.name().contains("mapB") || field.name().contains("mapC")) &&
-//										obj.getClass().getName().contains("ObjectReferenceImpl")) {
-//									System.out.println("obj class: " + obj.getClass().getName() + " // name: " +  class_.name() + "// id: " +  obj.uniqueID());
-//									Value value = obj.getValue(field); 
-//									System.out.println("  field: " + field.declaringType() + " " + field.name() + " " +
-//											value);
-//							
-//								}
-//							}
-//						}
-					
-					
-
-					
+	
 				} 
-				
-//				Date finish = new Date();
-//				System.out.println(finish.getTime());
-//				Long dif = finish.getTime() - start.getTime();
-//				System.out.println("dif: " + dif + "; ");
 
 				break;
 			}						
@@ -130,7 +97,6 @@ public class DebugEventListener implements IDebugEventSetListener{
 	}
 	
 	public static ObjectReference getObjectRef(long id) {
-//		return objects.get(id);
 		int id_ = (int) id;
 		return objects[id_];
 	}

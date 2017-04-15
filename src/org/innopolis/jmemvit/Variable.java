@@ -2,10 +2,6 @@ package org.innopolis.jmemvit;
 
 import static org.innopolis.jmemvit.Global.*;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,21 +11,11 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.swt.SWTException;
-import org.junit.internal.runners.MethodValidator;
-
-import com.sun.jdi.ClassNotLoadedException;
 import com.sun.jdi.Field;
-import com.sun.jdi.IncompatibleThreadStateException;
-import com.sun.jdi.InvalidTypeException;
-import com.sun.jdi.InvocationException;
 import com.sun.jdi.ObjectReference;
-import com.sun.jdi.ThreadReference;
-import com.sun.jdi.Value;
-import com.sun.jdi.VirtualMachine;
 
 
 /**
@@ -355,53 +341,6 @@ public class Variable implements Comparable<Variable>{
 			varMap.put(KEY + TYPE.toUpperCase(), varType);
 			String hasValueChanged  = var.hasValueChanged() + "";
 			varMap.put(KEY + HAS_VALUE_CHANGED.toUpperCase(), hasValueChanged);
-			
-			
-//			System.out.println(varType + " " + varName + " " + varValue );
-//			if (isObjectType(var)) {
-//			Long id = parseID(varValue);
-//			if (id != null) {
-//				ObjectReference obj = DebugEventListener.getObjectRef(id);
-//				if (obj != null) {
-//					try {
-//						//obj.virtualMachine().suspend();
-//						Method[] methods = obj.getClass().getMethods();
-//						for (Method method: methods) {
-//
-//								//List<? extends Value> args = new ArrayList<Value>();
-//								int integ =  obj.INVOKE_SINGLE_THREADED;
-//								ThreadReference thread = null;
-//								try {
-//									thread = obj.owningThread();
-//								} catch (IncompatibleThreadStateException e1) {
-//									// TODO Auto-generated catch block
-//									e1.printStackTrace();
-//								}
-//								com.sun.jdi.Method methodd = obj.referenceType().methodsByName("toString").get(0);
-//								try {
-//									Value res = obj.invokeMethod(thread , methodd , null, integ);
-//									System.out.println("---" + res.toString());
-//								} catch (InvalidTypeException
-//										| ClassNotLoadedException
-//										| IncompatibleThreadStateException
-//										| InvocationException e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//								}
-//							System.out.println("---" + method.getName() + " param:" +  method.getParameters());
-//						}
-//						//obj.virtualMachine().resume();;
-//					} catch (IllegalArgumentException
-//							| SecurityException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					
-//					}
-//				}
-//			}
-			
-			
 		} catch (DebugException e) {
 //			e.printStackTrace();
 		}
@@ -460,15 +399,7 @@ public class Variable implements Comparable<Variable>{
 	public static ArrayList<IVariable> getObjectsFromVars(
 			ArrayList<IVariable> vars) {
 		ArrayList<IVariable> fieldsObjects = new ArrayList<IVariable>();
-		for (IVariable var: vars) {
-			
-//			try {
-//				System.out.println(var.getName() + ' ' + isObjectType(var));
-//			} catch (DebugException e) {
-//				e.printStackTrace();
-//			}
-			
-			
+		for (IVariable var: vars) {		
 			if (isObjectType(var)) {
 				fieldsObjects.add(var);
 			}

@@ -53,9 +53,6 @@ public class StackFrame {
 		VirtualMachine jvm = DebugEventListener.getJVM(frame);
 		
 		
-//		if (jvm == null) { 
-//			getMethodClassName(frame, frameNum);
-//		}
 		List<ThreadReference> threads = jvm.allThreads();
 		for (ThreadReference thread: threads) {
 			try {

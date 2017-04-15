@@ -21,8 +21,9 @@ public class JsonBuilder {
 	
 	/**
 	 * The constructor
+	 * @param json 
 	 */
-	public JsonBuilder() {
+	public JsonBuilder(){
 		this.json = new JSONObject();
 	}
 	
@@ -36,7 +37,7 @@ public class JsonBuilder {
 	 * This method adds information about stack and heap at specific time
 	 * and returns updated JSON
 	 */
-	public JSONObject addInJson(IStackFrame[] frames){		
+	public JSONObject getJson(IStackFrame[] frames){		
 		Stack stack = new Stack(frames) ;
 		Heap heap = new Heap(stack);
 		String date = DateTime.getCurrentDateTime();
@@ -76,31 +77,8 @@ public class JsonBuilder {
 		Map<String, Object> frameMap = new HashMap<String, Object>();
 		for (int frameNum = 0; frameNum < frames.length; frameNum++) {
 			String frameName = stack.getStackFrameName(frames[frameNum]);
-			String frameCalssName = "";
-//			try {
-				
-//				IVariable[] vars = frames[frameNum].getVariables();
-//				frameCalssName = vars[0].getReferenceTypeName().toString();
-				
-				frameCalssName = StackFrame.getMethodClassName(frames[frameNum], frameNum);
-				
-//				frames[frameNum]
-				//frameCalssName = 
-				
-//				String f = frames[frameNum].getClass().getName();
-//				Location ct = new Location();
-//				Method m = 	ClassType.concreteMethodByName("", "");
-//				
-				
-//				System.out.println(f);
-				
-//				Thread.sleep(1);
-//				IThread thread = frames[frameNum].getThread();
-//				StackTraceElement[] stackTraces = thread.getStackTrace();
-//				frameCalssName =  [frameNum].getClassName();
-//			} catch (DebugException e) {
-//				e.printStackTrace();
-//			}
+			String frameCalssName = "";			
+			frameCalssName = StackFrame.getMethodClassName(frames[frameNum], frameNum);				
 			IVariable[] vars = stack.getStackFrameVariables(frames[frameNum]);
 			ArrayList<IVariable> varsArrList = new ArrayList<IVariable>(Arrays.asList(vars));
 			Map<String, Object> varsMap = new HashMap<String, Object>();

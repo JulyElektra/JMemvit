@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-import org.innopolis.jmemvit.StackFrame;
-import org.innopolis.jmemvit.Variable;
+import org.innopolis.jmemvit.data.StackFrame;
+import org.innopolis.jmemvit.data.Variable;
 import org.junit.Test;
 
 public class TestStackFrame {

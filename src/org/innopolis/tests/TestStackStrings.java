@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 import org.innopolis.jmemvit.*;
+import org.innopolis.jmemvit.data.Stack;
+import org.innopolis.jmemvit.data.StackFrame;
 import org.junit.Test;
 
 public class TestStackStrings {

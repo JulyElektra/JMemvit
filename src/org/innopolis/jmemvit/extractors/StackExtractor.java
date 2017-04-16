@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.extractors;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;

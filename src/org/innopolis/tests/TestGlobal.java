@@ -1,6 +1,6 @@
 package org.innopolis.tests;
 
-import org.innopolis.jmemvit.Global;
+import org.innopolis.jmemvit.utils.Global;
 import org.junit.Test;
 
 public class TestGlobal {

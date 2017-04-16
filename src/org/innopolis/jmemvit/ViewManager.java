@@ -14,6 +14,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
+import org.innopolis.jmemvit.data.State;
+import org.innopolis.jmemvit.extractors.StackExtractor;
+import org.innopolis.jmemvit.json.JsonBuilder;
 import org.json.JSONObject;
 
 /**

@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.utils;
 
 /**
  * The Global class is consists of text constants

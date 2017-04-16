@@ -2,6 +2,8 @@ package org.innopolis.jmemvit;
 
 import java.util.ArrayList;
 
+import org.innopolis.jmemvit.data.State;
+import org.innopolis.jmemvit.json.JsonReader;
 import org.json.JSONException;
 import org.json.JSONObject;
 

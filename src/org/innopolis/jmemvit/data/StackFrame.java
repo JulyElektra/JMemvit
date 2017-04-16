@@ -1,10 +1,12 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
+import org.innopolis.jmemvit.DebugEventListener;
+
 import com.sun.jdi.IncompatibleThreadStateException;
 import com.sun.jdi.Method;
 import com.sun.jdi.ThreadReference;

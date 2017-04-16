@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.innopolis.jmemvit.*;
+import org.innopolis.jmemvit.data.State;
+import org.innopolis.jmemvit.json.JsonReader;
 import org.json.JSONObject;
 import org.junit.Test;
 

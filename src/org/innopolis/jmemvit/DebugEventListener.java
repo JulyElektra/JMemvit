@@ -8,6 +8,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.jdt.internal.debug.core.model.JDIDebugTarget;
+import org.innopolis.jmemvit.extractors.VariableExtractor;
 
 import com.sun.jdi.ObjectReference;
 import com.sun.jdi.ReferenceType;
@@ -73,7 +74,7 @@ public class DebugEventListener implements IDebugEventSetListener{
 				for (ReferenceType Class: classes) {
 					String className = Class.name();
 					boolean print = true;
-					print = Variable.isNotSkippedClasses(className);
+					print = VariableExtractor.isNotSkippedClasses(className);
 
 				
 					if (!print){continue;}	

@@ -1,6 +1,6 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.json;
 
-import static org.innopolis.jmemvit.Global.*;
+import static org.innopolis.jmemvit.utils.Global.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +8,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.innopolis.jmemvit.data.Heap;
+import org.innopolis.jmemvit.data.Stack;
+import org.innopolis.jmemvit.data.StackFrame;
+import org.innopolis.jmemvit.data.State;
+import org.innopolis.jmemvit.data.Variable;
+import org.innopolis.jmemvit.utils.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

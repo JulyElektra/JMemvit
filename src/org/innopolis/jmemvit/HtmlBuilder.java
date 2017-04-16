@@ -1,8 +1,14 @@
 package org.innopolis.jmemvit;
 
-import static org.innopolis.jmemvit.Global.*;
+import static org.innopolis.jmemvit.utils.Global.*;
 
 import java.util.ArrayList;
+
+import org.innopolis.jmemvit.data.Heap;
+import org.innopolis.jmemvit.data.Stack;
+import org.innopolis.jmemvit.data.StackFrame;
+import org.innopolis.jmemvit.data.State;
+import org.innopolis.jmemvit.data.Variable;
 
 public class HtmlBuilder {
 	

@@ -1,6 +1,8 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.data;
 
 import java.util.Date;
+
+import org.innopolis.jmemvit.utils.DateTime;
 
 /**
  * The State class storing the information about time and actual stack and heap at that time

@@ -1,6 +1,6 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.json;
 
-import static org.innopolis.jmemvit.Global.*;
+import static org.innopolis.jmemvit.utils.Global.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +9,11 @@ import java.util.Map;
 
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
+import org.innopolis.jmemvit.data.StackFrame;
+import org.innopolis.jmemvit.extractors.HeapExtractor;
+import org.innopolis.jmemvit.extractors.StackExtractor;
+import org.innopolis.jmemvit.extractors.VariableExtractor;
+import org.innopolis.jmemvit.utils.DateTime;
 import org.json.*;
 
 
@@ -55,11 +60,11 @@ public class JsonBuilder {
 	 */
 	private Map<String, Object> getHeapMap(HeapExtractor heap) {
 		ArrayList<IVariable> vars = heap.getHeap();		
-		ArrayList<IVariable> fields = Variable.getFieldsOfVars(vars);
-		ArrayList<IVariable> fieldsObjects = Variable.getObjectsFromVars(fields);
+		ArrayList<IVariable> fields = VariableExtractor.getFieldsOfVars(vars);
+		ArrayList<IVariable> fieldsObjects = VariableExtractor.getObjectsFromVars(fields);
 		vars.addAll(fieldsObjects);
 		Map<String, Object> varsMap = new HashMap<String, Object>();
-		ArrayList<Map<String, String>> varsList = Variable.getVarsList(vars);		
+		ArrayList<Map<String, String>> varsList = VariableExtractor.getVarsList(vars);		
 		varsMap.put(VARIABLES, varsList);	
 		Map<String, Object> heapMap = new HashMap<String, Object>();
 		heapMap.put(HEAP, varsMap);
@@ -82,7 +87,7 @@ public class JsonBuilder {
 			IVariable[] vars = stack.getStackFrameVariables(frames[frameNum]);
 			ArrayList<IVariable> varsArrList = new ArrayList<IVariable>(Arrays.asList(vars));
 			Map<String, Object> varsMap = new HashMap<String, Object>();
-			ArrayList<Map<String, String>> varsList = Variable.getVarsList(varsArrList);
+			ArrayList<Map<String, String>> varsList = VariableExtractor.getVarsList(varsArrList);
 			varsMap.put(VARIABLES, varsList);			
 			frameMap.put((frameNum + " " + frameCalssName + "." + frameName  + "(...)").toString(), varsMap);
 		}

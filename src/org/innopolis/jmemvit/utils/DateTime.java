@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

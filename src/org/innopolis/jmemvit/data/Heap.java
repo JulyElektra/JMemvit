@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.data;
 
 import java.util.ArrayList;
 

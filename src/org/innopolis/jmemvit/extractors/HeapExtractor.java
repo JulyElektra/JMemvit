@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.extractors;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -82,7 +82,7 @@ public class HeapExtractor {
 		IVariable[] vars = stack.getStackFrameVariables(frame);
 		ArrayList<IVariable> objects = new ArrayList<>();
 		for (IVariable var: vars) {
-			if (Variable.isObjectType(var)) {
+			if (VariableExtractor.isObjectType(var)) {
 				objects.add(var);
 			}
 			else {

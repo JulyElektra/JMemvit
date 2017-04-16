@@ -3,7 +3,7 @@ package org.innopolis.tests;
 
 import org.innopolis.jmemvit.*;
 import org.innopolis.jmemvit.json.JsonBuilder;
-import org.innopolis.jmemvit.mock.MockIStackFrame;
+import org.innopolis.tests.mock.MockIStackFrame;
 import org.json.JSONObject;
 import org.junit.Test;
 

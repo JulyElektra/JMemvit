@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit.mock;
+package org.innopolis.tests.mock;
 
 import java.io.File;
 import java.io.InputStream;

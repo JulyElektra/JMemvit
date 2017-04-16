@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.innopolis.jmemvit.DebugEventListener;
 import org.innopolis.jmemvit.ViewManager;
-import org.innopolis.jmemvit.mock.MockIJavaThread;
+import org.innopolis.tests.mock.MockIJavaThread;
 import org.junit.Test;
 
 public class TestViewManager {

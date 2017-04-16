@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit.mock;
+package org.innopolis.tests.mock;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;

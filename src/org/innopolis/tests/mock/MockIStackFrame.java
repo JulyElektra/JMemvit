@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit.mock;
+package org.innopolis.tests.mock;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.ILaunch;

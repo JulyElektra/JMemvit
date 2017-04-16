@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit.temporal;
+package org.innopolis.tests.temporal;
 
 import java.io.File;
 import java.io.FileWriter;

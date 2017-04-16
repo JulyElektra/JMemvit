@@ -56,7 +56,7 @@ public class DebugEventListener implements IDebugEventSetListener{
 		return itIsUpdatedThread;
 	}
 	
-	public static VirtualMachine getJVM(IStackFrame frame) {//, ArrayList<IVariable> heapFromStack){
+	public static VirtualMachine getJVM(IStackFrame frame) {
 		if (frame == null){
 			return null;
 		}

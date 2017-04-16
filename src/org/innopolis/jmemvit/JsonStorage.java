@@ -12,15 +12,13 @@ public class JsonStorage {
 	private JSONObject json;
 
 	public JsonStorage() {
-		this.json = new JSONObject();
+		this.json = new JSONObject();	
 	}
-	
-	
+		
 
 	public int getCurrentStateNumber() {
 		return currentStateNumber;
 	}
-
 
 
 	public void setCurrentStateNumber(int currentStateNumber) {
@@ -28,17 +26,14 @@ public class JsonStorage {
 	}
 
 
-
 	public void setCurrentState(State currentState) {
 		this.currentState = currentState;
 	}
 
 
-
 	public void setJson(JSONObject json) {
 		this.json = json;
 	}
-
 
 
 	public JSONObject getJson() {
@@ -49,14 +44,13 @@ public class JsonStorage {
 		json = mergeJSONObjects(json, jsonToAdd);
 	}
 	
-	public static JSONObject mergeJSONObjects(JSONObject json1, JSONObject json2) {
+	private static JSONObject mergeJSONObjects(JSONObject json1, JSONObject json2) {
 		JSONObject mergedJSON = new JSONObject();
 		try {
 			String[] j = JSONObject.getNames(json1);
 			if (j == null) {
 				return json2;
 			}
-			System.out.println(j);
 			mergedJSON = new JSONObject(json1, j);
 			for (String crunchifyKey : JSONObject.getNames(json2)) {
 				mergedJSON.put(crunchifyKey, json2.get(crunchifyKey));

@@ -38,8 +38,8 @@ public class JsonBuilder {
 	 * and returns updated JSON
 	 */
 	public JSONObject getJson(IStackFrame[] frames){		
-		Stack stack = new Stack(frames) ;
-		Heap heap = new Heap(stack);
+		StackExtractor stack = new StackExtractor(frames) ;
+		HeapExtractor heap = new HeapExtractor(stack);
 		String date = DateTime.getCurrentDateTime();
 		Map<String, Object> heapAndStack = new HashMap<String, Object>();
 		Map<String, Object> stackMap = getStackMap(stack);
@@ -53,7 +53,7 @@ public class JsonBuilder {
 	/*
 	 * Returns Map list with heap information: all objects in the heap
 	 */
-	private Map<String, Object> getHeapMap(Heap heap) {
+	private Map<String, Object> getHeapMap(HeapExtractor heap) {
 		ArrayList<IVariable> vars = heap.getHeap();		
 		ArrayList<IVariable> fields = Variable.getFieldsOfVars(vars);
 		ArrayList<IVariable> fieldsObjects = Variable.getObjectsFromVars(fields);
@@ -70,7 +70,7 @@ public class JsonBuilder {
 	 * Returns Map list with stack information: all stack frames, 
 	 * stack frame number and variables at each stack frame
 	 */
-	private Map<String, Object> getStackMap(Stack stack) {
+	private Map<String, Object> getStackMap(StackExtractor stack) {
 		IStackFrame[] frames = stack.getStackFrames();
 		
 

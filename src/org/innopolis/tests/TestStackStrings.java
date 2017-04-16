@@ -11,16 +11,16 @@ public class TestStackStrings {
 	
 	@Test
 	public void stackStringsCheckingNull() {
-		StackFrameStrings stack1 = new StackFrameStrings(null);
+		Stack stack1 = new Stack(null);
 		assertEquals(stack1.getStackFrames().size(),0);
-		StackFrameStrings stack2 = new StackFrameStrings();
+		Stack stack2 = new Stack();
 		assertEquals(stack2.getStackFrames().size(),0);
 	}
 	
 	@Test
 	public void stackStringsChecking() {
 		ArrayList<StackFrame> list = new ArrayList<StackFrame>();
-		StackFrameStrings stack = new StackFrameStrings(list);
+		Stack stack = new Stack(list);
 		assertTrue(stack.getStackFrames().equals(list));
 	}
 }

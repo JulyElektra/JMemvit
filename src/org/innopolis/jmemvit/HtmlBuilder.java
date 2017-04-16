@@ -117,8 +117,8 @@ public class HtmlBuilder {
 	 * The method returns HTML string for the state
 	 */
 	public String getHtmlString(State state) {
-		StackFrameStrings stack = state.getStack();
-		HeapStrings heap = state.getHeap();
+		Stack stack = state.getStack();
+		Heap heap = state.getHeap();
 		String htmlString = build(stack, heap);
 		return htmlString;
 	}
@@ -126,7 +126,7 @@ public class HtmlBuilder {
 	/*
 	 * The method build HTML string for the stack and heap
 	 */
-	private String build(StackFrameStrings stack, HeapStrings heap) {
+	private String build(Stack stack, Heap heap) {
 		String stackHtml = getStackHtml(stack);
 		String heapHtml = getHeapHtml(heap);
 		String htmlString = tableHeader + stackHtml + heapHtml + tableFooter;
@@ -136,7 +136,7 @@ public class HtmlBuilder {
 	/*
 	 * The method build HTML string for the stack
 	 */
-	private String getStackHtml(StackFrameStrings stack) {
+	private String getStackHtml(Stack stack) {
 		String stackFramesHtml = getStackFramesHtml(stack);
 		//String stackHtml = stackHeader +  getButtonsHtml() + stackFramesHtml;
 		String stackHtml = stackHeader + stackFramesHtml + heapOrStackFooter;
@@ -147,7 +147,7 @@ public class HtmlBuilder {
 	/*
 	 * The method build HTML string for the heap
 	 */
-	private String getHeapHtml(HeapStrings heap) {
+	private String getHeapHtml(Heap heap) {
 		ArrayList<Variable> vars = heap.getVariables();
 		String heapHtml = heapHeader + subTableHeader + getVarsHtml(vars, HEAP) + subTableFooter;
 		return heapHtml;
@@ -383,7 +383,7 @@ public class HtmlBuilder {
 	/*
 	 * The method build HTML string for stack frames
 	 */
-	private String getStackFramesHtml(StackFrameStrings stack) {
+	private String getStackFramesHtml(Stack stack) {
 		String stackFramesHtml = "";
 		ArrayList<StackFrame> stackFrames = stack.getStackFrames();
 		for (StackFrame frame: stackFrames) {

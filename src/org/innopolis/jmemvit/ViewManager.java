@@ -213,7 +213,7 @@ public class ViewManager extends ViewPart {
 	private IStackFrame[] getActualStackFrames() {
 		// Get current thread to extract data
 		IJavaThread currentThread = jdiEventListener.getCurrentThread();
-		Stack stack = new Stack(currentThread);
+		StackExtractor stack = new StackExtractor(currentThread);
 				
 		// Get stack frames
 		IStackFrame[] frames = stack.getStackFrames();

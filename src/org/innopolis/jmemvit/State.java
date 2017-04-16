@@ -8,31 +8,31 @@ import java.util.Date;
 public class State implements Comparable<Object>{
 	
 	private String date;	
-	private StackFrameStrings stack;
-	private HeapStrings heap;
+	private Stack stack;
+	private Heap heap;
 		
 	/**
 	 * The constructor
 	 */
-	public State(String date, StackFrameStrings stack, HeapStrings heap) {
+	public State(String date, Stack stack, Heap heap) {
 		this.date = date;
 		this.stack = stack;
 		this.heap = heap;
 	}
 
-	public StackFrameStrings getStack() {
+	public Stack getStack() {
 		return stack;
 	}
 
-	public void setStack(StackFrameStrings stack) {
+	public void setStack(Stack stack) {
 		this.stack = stack;
 	}
 
-	public HeapStrings getHeap() {
+	public Heap getHeap() {
 		return heap;
 	}
 
-	public void setHeap(HeapStrings heap) {
+	public void setHeap(Heap heap) {
 		this.heap = heap;
 	}
 	

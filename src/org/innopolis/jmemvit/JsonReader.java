@@ -171,8 +171,8 @@ public class JsonReader {
 		try {
 			JSONArray jArr = (JSONArray)jObj.get(time);
 			JSONObject heapAndStack = (JSONObject) jArr.get(0);
-			StackFrameStrings stack = getStack(time, heapAndStack);
-			HeapStrings heap = getHeap(time, heapAndStack);
+			Stack stack = getStack(time, heapAndStack);
+			Heap heap = getHeap(time, heapAndStack);
 			State state = new State(time, stack, heap);	
 			return state;
 		} catch (JSONException e) {
@@ -184,19 +184,19 @@ public class JsonReader {
 	/*
 	 * This method returns a heap from JSON
 	 */
-	private HeapStrings getHeap(String time, JSONObject heapAndStack) {				
+	private Heap getHeap(String time, JSONObject heapAndStack) {				
 		ArrayList<Variable> heapVars = getVars ((JSONObject) heapAndStack, HEAP);
-		HeapStrings heap = new HeapStrings(heapVars);
+		Heap heap = new Heap(heapVars);
 		return heap;
 	}
 
 	/*
 	 * This method returns a stack from JSON
 	 */
-	private StackFrameStrings getStack(String time, JSONObject heapAndStack) {
+	private Stack getStack(String time, JSONObject heapAndStack) {
 		JSONObject stackJSObj = (JSONObject) heapAndStack.get(STACK);
 		ArrayList<StackFrame> stackFrames = getStackFrames(stackJSObj);
-		StackFrameStrings stack = new StackFrameStrings(stackFrames);
+		Stack stack = new Stack(stackFrames);
 		return stack;
 	}
 

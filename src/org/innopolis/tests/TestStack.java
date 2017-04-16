@@ -11,7 +11,7 @@ public class TestStack {
 	@Test
 	public void testInit() throws DebugException {
 		MockIJavaThread thread = new MockIJavaThread();
-		Stack stack = new Stack (thread);
+		StackExtractor stack = new StackExtractor (thread);
 		IStackFrame frame = stack.getTopStackFrame();
 		stack.getStackFrames();
 		stack.getStackFrameLineNumber(frame);
@@ -20,7 +20,7 @@ public class TestStack {
 	@Test
 	public void testThreadNull() throws DebugException {
 		MockIJavaThread thread = null;
-		Stack stack = new Stack (thread);
+		StackExtractor stack = new StackExtractor (thread);
 		IStackFrame frame = stack.getTopStackFrame();
 		stack.getStackFrames();
 		stack.getStackFrameLineNumber(null);

@@ -11,16 +11,16 @@ public class TestHeapStrings {
 	
 	@Test
 	public void heapStringsCheckingNull() {
-		HeapStrings heap1 = new HeapStrings(null);
+		Heap heap1 = new Heap(null);
 		assertEquals(heap1.getVariables().size(),0);
-		HeapStrings heap2 = new HeapStrings();
+		Heap heap2 = new Heap();
 		assertEquals(heap2.getVariables().size(),0);
 	}
 	
 	@Test
 	public void heapStringsChecking() {
 		ArrayList<Variable> list = new ArrayList<Variable>();
-		HeapStrings heap = new HeapStrings(list);
+		Heap heap = new Heap(list);
 		assertTrue(heap.getVariables().equals(list));
 	}
 }

@@ -21,7 +21,7 @@ public class TestState {
 	//Test checks method compareTo in class State if we have wrong data
 	@Test 
 	public void comparisonWrongInput() {
-		State state1 = new State("01.01.2017 01:00:32:234", new StackFrameStrings(),new HeapStrings() );
+		State state1 = new State("01.01.2017 01:00:32:234", new Stack(),new Heap() );
 		State state4 = new State("1234", null, null );
 		state4.compareTo(state1);
 		state1.compareTo(new Object());
@@ -32,8 +32,8 @@ public class TestState {
 		State state1 = new State("01.01.2017 01:00:32:234", null, null );
 		String date = "13.02.2017 12:00:32:234";
 		state1.setDate(date);
-		HeapStrings heap = new HeapStrings();
-		StackFrameStrings stack = new StackFrameStrings();
+		Heap heap = new Heap();
+		Stack stack = new Stack();
 		state1.setHeap(heap);
 		state1.setStack(stack);
 		assertTrue(state1.getHeap().equals(heap));

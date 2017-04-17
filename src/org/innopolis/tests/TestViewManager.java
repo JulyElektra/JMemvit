@@ -8,7 +8,7 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.innopolis.jmemvit.DebugEventListener;
-import org.innopolis.jmemvit.ViewManager;
+import org.innopolis.jmemvit.View;
 import org.innopolis.tests.mock.MockIJavaThread;
 import org.junit.Test;
 
@@ -27,15 +27,15 @@ public class TestViewManager {
 		Shell shell = new Shell(display);
 		Browser browser = new Browser(shell, SWT.NONE);
 		
-		ViewManager view = new ViewManager(listener, browser);
+		View view = new View(listener, browser);
 		
 		//view.vizualizateView();
 		DebugEvent[] events2 = {event, event, event2, event2};
 		listener.handleDebugEvents(events2);
 		//view.createPartControl(shell);
-		view.vizualizateView();
-		view.vizualizateView();
+//		view.vizualizateView();
+//		view.vizualizateView();
 		view.setFocus();
-		ViewManager view2 = new ViewManager();
+		View view2 = new View();
 	}
 }

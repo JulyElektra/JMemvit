@@ -12,7 +12,7 @@
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
-            class="org.innopolis.jmemvit.ViewManager"
+            class="org.innopolis.jmemvit.View"
             icon="icons/sample.gif"
             id="JMemvit.view1"
             name="JMemvit"

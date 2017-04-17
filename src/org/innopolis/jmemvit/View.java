@@ -1,9 +1,5 @@
 package org.innopolis.jmemvit;
 
-import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.model.IStackFrame;
-import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -15,16 +11,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.innopolis.jmemvit.data.State;
-import org.innopolis.jmemvit.extractors.StackExtractor;
-import org.innopolis.jmemvit.json.JsonBuilder;
-import org.json.JSONObject;
 
 /**
  * The ViewManager class controls graphical interface of the program
  */
-public class ViewManager extends ViewPart {
+public class View extends ViewPart {
 
-	private DebugEventListener jdiEventListener;
 	private Browser browser;
 	private JsonStorage jsonStorage;
 
@@ -32,36 +24,19 @@ public class ViewManager extends ViewPart {
 	/**
 	 * The constructor
 	 */
-	public ViewManager() {
+	public View() {
 		jsonStorage = new JsonStorage();
 	}
 	
 	/**
 	 * The constructor for JUnit Testing
 	 */
-	public ViewManager(DebugEventListener listener, Browser browser) {
-		this.jdiEventListener = listener;
+	public View(DebugEventListener listener, Browser browser) {
+//		this.jdiEventListener = listener;
 		this.browser = browser;
 	}
 
-	class RunnableForThread implements Runnable{
-		public void run() {
-			while (true) {
-				try { 
-					Thread.sleep(1000); 
-				} catch (Exception e) { 
-				}
-				Runnable task = () -> { 
-					try {
-						vizualizateView();
-					} catch (DebugException e) {						
-						e.printStackTrace();
-					}
-				};
-				Display.getDefault().asyncExec(task);
-			}			
-		}
-	}
+
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -128,13 +103,9 @@ public class ViewManager extends ViewPart {
 	      });
 
 		
-		jdiEventListener = new DebugEventListener();
-		DebugPlugin debugPlugin = DebugPlugin.getDefault();
-		debugPlugin.addDebugEventListener(jdiEventListener);		
-		
-		Runnable runnable = new RunnableForThread();
-		Thread thread = new Thread(runnable);
-		thread.start();	
+		DebugEventListener jdiEventListener = new DebugEventListener();
+		Manager manager = new Manager(jsonStorage, this, jdiEventListener);
+		manager.manage();
 	}
 	
 
@@ -147,32 +118,6 @@ public class ViewManager extends ViewPart {
 	/*
 	 * Method visualizes all elements in view
 	 */
-	public void vizualizateView() throws DebugException{
-			
-		// Check if there is any updates
-		if (hasEventUpdates()) {			
-			IStackFrame[] frames = getActualStackFrames();
-			
-			JsonBuilder jsonBuilder = new JsonBuilder();
-			// Writing data in JSON
-			JSONObject json = jsonBuilder.getJson(frames);
-			jsonStorage.addToJson(json);
-			
-			
-			jsonStorage.setCurrentStateNumber(1);
-			visualizeCurrentState();
-						
-//			// TODO delete in the final version
-//			String jsonString = json.toString();
-//			org.innopolis.jmemvit.temporal.MyFileWriter.write(jsonString);
-		}
-		else {
-			// There is no updates or nothing
-			// to update in visualization
-		}
-	}
-
-
 
 	/*
 	 * Method gets HTML string from the state
@@ -210,36 +155,9 @@ public class ViewManager extends ViewPart {
 		return topFrame;
 	}*/
 	
-	/* 
-	 * This method returns stack frames of current thread
-	 */
-	private IStackFrame[] getActualStackFrames() {
-		// Get current thread to extract data
-		IJavaThread currentThread = jdiEventListener.getCurrentThread();
-		StackExtractor stack = new StackExtractor(currentThread);
-				
-		// Get stack frames
-		IStackFrame[] frames = stack.getStackFrames();
-		return frames;
-	}
 
-	/* 
-	 * Method checks if there was any changes in events. Result will 
-	 * be used for deciding if it is needed to refresh view or not.
-	 */
-	private boolean hasEventUpdates() {
-		
-		if(jdiEventListener != null && jdiEventListener.isItUpdatedThread()) {
-			// Events exist and there is changers in event
-			return true;
-		}
-		else {
-			// There is no events or there is not changers in event
-			return false;
-		}		
-	}	
 	
-	private void visualizeCurrentState() {
+	public void visualizeCurrentState() {
 		// Reading from JSON information about the current state
 		State currentState = jsonStorage.getCurrentState();
 		

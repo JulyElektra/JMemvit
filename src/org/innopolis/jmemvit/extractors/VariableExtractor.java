@@ -23,6 +23,9 @@ import org.innopolis.jmemvit.DebugEventListener;
 import com.sun.jdi.Field;
 import com.sun.jdi.ObjectReference;
 
+/*
+ * This class is used for deriving information about the the variable of the debugged program
+ */
 public class VariableExtractor {
 
 	/*

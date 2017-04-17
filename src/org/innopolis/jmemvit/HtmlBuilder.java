@@ -10,6 +10,9 @@ import org.innopolis.jmemvit.data.StackFrame;
 import org.innopolis.jmemvit.data.State;
 import org.innopolis.jmemvit.data.Variable;
 
+/*
+ * HtmlBuilder converts information from state of the program to the HTML format
+ */
 public class HtmlBuilder {
 	
 	// Parameter "Stack" or "Heap"

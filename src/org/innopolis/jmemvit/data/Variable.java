@@ -21,7 +21,6 @@ import com.sun.jdi.ObjectReference;
 
 /**
  * The Variable class stores information about variables 
- * and does some operation with variables
  */
 public class Variable implements Comparable<Variable>{
 	

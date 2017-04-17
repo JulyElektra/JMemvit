@@ -13,7 +13,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.innopolis.jmemvit.data.State;
 
 /**
- * The ViewManager class controls graphical interface of the program
+ * The View class visualizes graphical interface of the program
  */
 public class View extends ViewPart {
 

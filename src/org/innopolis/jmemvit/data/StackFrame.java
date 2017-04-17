@@ -14,7 +14,7 @@ import com.sun.jdi.VirtualMachine;
 
 
 /**
- * The StackFrame class is used storing information about stack frames content
+ * The StackFrame class is used to store the information about stack frames content
  */
 public class StackFrame {
 	

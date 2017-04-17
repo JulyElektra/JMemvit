@@ -7,6 +7,9 @@ import org.innopolis.jmemvit.json.JsonReader;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/*
+ * Class stores JSON with all states and current state and its index
+ */
 public class JsonStorage {
 	
 	private State currentState;

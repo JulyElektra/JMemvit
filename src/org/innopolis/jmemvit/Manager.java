@@ -9,6 +9,9 @@ import org.innopolis.jmemvit.extractors.StackExtractor;
 import org.innopolis.jmemvit.json.JsonBuilder;
 import org.json.JSONObject;
 
+/*
+ * Controls how user actions modify data and if view shows an actual results
+ */
 public class Manager {
 	private JsonStorage jsonStorage;
 	private View view;
@@ -92,6 +95,10 @@ public class Manager {
 		
 	}
 	
+	/*
+	 * An inner class of class Manager. It checks if there are any updates 
+	 * in obtained data or a new user action
+	 */
 	class RunnableForThread implements Runnable{
 		public void run() {
 			while (true) {

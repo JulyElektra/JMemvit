@@ -3,7 +3,7 @@ package org.innopolis.jmemvit.data;
 import java.util.ArrayList;
 
 /**
- * The StackStrings class contains of textual information of stack and
+ * The Stack class contains of textual information of stack and
  * it is used for extracting information from JSON and storing this information
  */
 public class Stack {

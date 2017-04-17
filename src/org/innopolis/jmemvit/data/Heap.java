@@ -3,7 +3,7 @@ package org.innopolis.jmemvit.data;
 import java.util.ArrayList;
 
 /**
- * The HeapStrings class contains of textual information of heap and
+ * The Heap class contains of textual information of heap and
  * it is used for extracting information from JSON and storing this information
  */
 public class Heap {

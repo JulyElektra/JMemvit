@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
+/*
+ * DateTime class helps to work with DateTime format
+ */
 public class DateTime {
 	private static final String DATE_FORMAT = "dd.MM.yyyy hh:mm:ss:SSS";
 	

@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-import org.innopolis.jmemvit.*;
-import org.innopolis.jmemvit.data.Stack;
-import org.innopolis.jmemvit.data.StackFrame;
+import org.innopolis.jmemvit.model.Stack;
+import org.innopolis.jmemvit.model.StackFrame;
+import org.innopolis.jmemvit.plugin.*;
 import org.junit.Test;
 
 public class TestStackStrings {

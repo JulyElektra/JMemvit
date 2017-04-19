@@ -7,8 +7,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.innopolis.jmemvit.DebugEventListener;
-import org.innopolis.jmemvit.View;
+import org.innopolis.jmemvit.controller.DebugEventListener;
+import org.innopolis.jmemvit.view.View;
 import org.innopolis.tests.mock.MockIJavaThread;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit.data;
+package org.innopolis.jmemvit.model;
 
 import java.util.Date;
 

@@ -23,38 +23,42 @@ public class MockBundleContext implements BundleContext{
 	@Override
 	public String getProperty(String key) {
 		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	@Override
 	public Bundle getBundle() {
+		Bundle b = new MockBundle();
 		// TODO Auto-generated method stub
-		return null;
+		return b ;
 	}
 
 	@Override
 	public Bundle installBundle(String location, InputStream input)
 			throws BundleException {
 		// TODO Auto-generated method stub
-		return null;
+		return new MockBundle();
 	}
 
 	@Override
 	public Bundle installBundle(String location) throws BundleException {
 		// TODO Auto-generated method stub
-		return null;
+		return new MockBundle();
 	}
 
 	@Override
 	public Bundle getBundle(long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return new MockBundle();
 	}
 
 	@Override
 	public Bundle[] getBundles() {
 		// TODO Auto-generated method stub
-		return null;
+		MockBundle b = new MockBundle();
+		Bundle[] array = new MockBundle[1];
+		array[0] = b;
+		return array ;
 	}
 
 	@Override
@@ -194,7 +198,7 @@ public class MockBundleContext implements BundleContext{
 	@Override
 	public Bundle getBundle(String location) {
 		// TODO Auto-generated method stub
-		return null;
+		return new MockBundle();
 	}
 
 }

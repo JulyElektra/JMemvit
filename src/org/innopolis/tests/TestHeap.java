@@ -4,12 +4,12 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-import org.innopolis.jmemvit.*;
-import org.innopolis.jmemvit.data.Heap;
-import org.innopolis.jmemvit.data.Variable;
+import org.innopolis.jmemvit.model.Heap;
+import org.innopolis.jmemvit.model.Variable;
+import org.innopolis.jmemvit.plugin.*;
 import org.junit.Test;
 
-public class TestHeapStrings {
+public class TestHeap {
 	
 	@Test
 	public void heapStringsCheckingNull() {

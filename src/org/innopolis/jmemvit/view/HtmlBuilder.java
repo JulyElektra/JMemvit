@@ -1,14 +1,14 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.view;
 
 import static org.innopolis.jmemvit.utils.Global.*;
 
 import java.util.ArrayList;
 
-import org.innopolis.jmemvit.data.Heap;
-import org.innopolis.jmemvit.data.Stack;
-import org.innopolis.jmemvit.data.StackFrame;
-import org.innopolis.jmemvit.data.State;
-import org.innopolis.jmemvit.data.Variable;
+import org.innopolis.jmemvit.model.Heap;
+import org.innopolis.jmemvit.model.Stack;
+import org.innopolis.jmemvit.model.StackFrame;
+import org.innopolis.jmemvit.model.State;
+import org.innopolis.jmemvit.model.Variable;
 
 /*
  * HtmlBuilder converts information from state of the program to the HTML format

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: JMemvit;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.innopolis.jmemvit.Activator
+Bundle-Activator: org.innopolis.jmemvit.plugin.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
@@ -23,7 +23,7 @@ Import-Package: com.sun.jdi,
  org.eclipse.jdt.core.dom,
  org.eclipse.jdt.debug.core,
  org.eclipse.jdt.internal.debug.core.model
-Export-Package: org.innopolis.jmemvit
+Export-Package: org.innopolis.jmemvit.plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: lib/json-20160810.jar,
  .

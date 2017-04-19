@@ -1,8 +1,7 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.model;
 
 import java.util.ArrayList;
 
-import org.innopolis.jmemvit.data.State;
 import org.innopolis.jmemvit.json.JsonReader;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,13 +9,13 @@ import org.json.JSONObject;
 /*
  * Class stores JSON with all states and current state and its index
  */
-public class JsonStorage {
+public class Storage {
 	
 	private State currentState;
 	private int currentStateNumber;
 	private JSONObject json;
 
-	public JsonStorage() {
+	public Storage() {
 		this.json = new JSONObject();	
 	}
 		

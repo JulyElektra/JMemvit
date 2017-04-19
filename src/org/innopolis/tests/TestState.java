@@ -2,10 +2,10 @@ package org.innopolis.tests;
 
 import static org.junit.Assert.*;
 
-import org.innopolis.jmemvit.*;
-import org.innopolis.jmemvit.data.Heap;
-import org.innopolis.jmemvit.data.Stack;
-import org.innopolis.jmemvit.data.State;
+import org.innopolis.jmemvit.model.Heap;
+import org.innopolis.jmemvit.model.Stack;
+import org.innopolis.jmemvit.model.State;
+import org.innopolis.jmemvit.plugin.*;
 import org.junit.Test;
 
 public class TestState {

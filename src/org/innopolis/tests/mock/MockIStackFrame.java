@@ -30,7 +30,7 @@ public class MockIStackFrame implements IStackFrame{
 	@Override
 	public ILaunch getLaunch() {
 		// TODO Auto-generated method stub
-		return null;
+		return new MockILaunch();
 	}
 
 	@Override

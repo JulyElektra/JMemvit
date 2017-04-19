@@ -1,11 +1,11 @@
-package org.innopolis.jmemvit.data;
+package org.innopolis.jmemvit.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IStackFrame;
-import org.innopolis.jmemvit.DebugEventListener;
+import org.innopolis.jmemvit.controller.DebugEventListener;
 
 import com.sun.jdi.IncompatibleThreadStateException;
 import com.sun.jdi.Method;
@@ -79,7 +79,7 @@ public class StackFrame {
 		return className;
 	}
 
-	public static boolean containsName(StackFrame frame,
+	public static boolean containsFrame(StackFrame frame,
 		ArrayList<StackFrame> frames) {
 		for (StackFrame frameCurrent: frames) {
 			if (frameCurrent.getName().equals(frame.getName())) {

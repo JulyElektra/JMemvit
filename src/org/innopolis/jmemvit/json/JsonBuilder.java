@@ -9,10 +9,10 @@ import java.util.Map;
 
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IVariable;
-import org.innopolis.jmemvit.data.StackFrame;
 import org.innopolis.jmemvit.extractors.HeapExtractor;
 import org.innopolis.jmemvit.extractors.StackExtractor;
 import org.innopolis.jmemvit.extractors.VariableExtractor;
+import org.innopolis.jmemvit.model.StackFrame;
 import org.innopolis.jmemvit.utils.DateTime;
 import org.json.*;
 

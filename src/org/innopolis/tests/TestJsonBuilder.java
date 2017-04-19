@@ -1,7 +1,6 @@
 package org.innopolis.tests;
 
 
-import org.innopolis.jmemvit.*;
 import org.innopolis.jmemvit.json.JsonBuilder;
 import org.innopolis.tests.mock.MockIStackFrame;
 import org.json.JSONObject;
@@ -12,6 +11,6 @@ public class TestJsonBuilder {
 	public void test1() {
 		JsonBuilder builder = new JsonBuilder();
 		MockIStackFrame[] frames = {new MockIStackFrame(), new MockIStackFrame(), new MockIStackFrame(), new MockIStackFrame(),new MockIStackFrame(),new MockIStackFrame()};
-		JSONObject json = builder.getJson(frames);		
+		//JSONObject json = builder.getJson(frames);		
 	}
 }

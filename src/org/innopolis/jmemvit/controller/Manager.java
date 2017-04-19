@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.controller;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -7,18 +7,20 @@ import org.eclipse.jdt.debug.core.IJavaThread;
 import org.eclipse.swt.widgets.Display;
 import org.innopolis.jmemvit.extractors.StackExtractor;
 import org.innopolis.jmemvit.json.JsonBuilder;
+import org.innopolis.jmemvit.model.Storage;
+import org.innopolis.jmemvit.view.View;
 import org.json.JSONObject;
 
 /*
  * Controls how user actions modify data and if view shows an actual results
  */
 public class Manager {
-	private JsonStorage jsonStorage;
+	private Storage jsonStorage;
 	private View view;
 	private DebugEventListener jdiEventListener;
 	
 	
-	public Manager(JsonStorage jsonStorage, View view,
+	public Manager(Storage jsonStorage, View view,
 			DebugEventListener jdiEventListener) {
 		super();
 		this.jsonStorage = jsonStorage;

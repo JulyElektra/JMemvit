@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.innopolis.jmemvit.data.Heap;
-import org.innopolis.jmemvit.data.Stack;
-import org.innopolis.jmemvit.data.StackFrame;
-import org.innopolis.jmemvit.data.State;
-import org.innopolis.jmemvit.data.Variable;
+import org.innopolis.jmemvit.model.Heap;
+import org.innopolis.jmemvit.model.Stack;
+import org.innopolis.jmemvit.model.StackFrame;
+import org.innopolis.jmemvit.model.State;
+import org.innopolis.jmemvit.model.Variable;
 import org.innopolis.jmemvit.utils.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,7 +87,7 @@ public class JsonReader {
 			ArrayList<StackFrame> framesCurrent) {
 		ArrayList<Variable> stackVarsJustInitialized = new ArrayList<Variable>();
 		for (StackFrame frameCurrent: framesCurrent) {
-			if (!StackFrame.containsName(frameCurrent, framesPrivious)) {
+			if (!StackFrame.containsFrame(frameCurrent, framesPrivious)) {
 				stackVarsJustInitialized.addAll(frameCurrent.getVars());
 			} else {			
 				for (StackFrame framePrivious: framesPrivious) {

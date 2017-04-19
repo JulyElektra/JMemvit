@@ -5,15 +5,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import org.innopolis.jmemvit.*;
-import org.innopolis.jmemvit.data.State;
 import org.innopolis.jmemvit.json.JsonReader;
+import org.innopolis.jmemvit.model.State;
+import org.innopolis.jmemvit.plugin.*;
 import org.json.JSONObject;
 import org.junit.Test;
 
 
 public class TestJsonReader {
-	File file = new File("C:/WorkSpaces/Eclipse luna/luna projects/JMemvit/src/org/innopolis/jmemvit/mock/MockJsonFile");
+	File file = new File("src/org/innopolis/tests/mock/MockJsonFile");
 	
 	@Test
 	public void testWrongDataFormat() throws Exception {

@@ -1,4 +1,4 @@
-package org.innopolis.jmemvit;
+package org.innopolis.jmemvit.view;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.SWT;
@@ -10,7 +10,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
-import org.innopolis.jmemvit.data.State;
+import org.innopolis.jmemvit.controller.DebugEventListener;
+import org.innopolis.jmemvit.controller.Manager;
+import org.innopolis.jmemvit.model.Storage;
+import org.innopolis.jmemvit.model.State;
 
 /**
  * The View class visualizes graphical interface of the program
@@ -18,14 +21,14 @@ import org.innopolis.jmemvit.data.State;
 public class View extends ViewPart {
 
 	private Browser browser;
-	private JsonStorage jsonStorage;
+	private Storage jsonStorage;
 
 	
 	/**
 	 * The constructor
 	 */
 	public View() {
-		jsonStorage = new JsonStorage();
+		jsonStorage = new Storage();
 	}
 	
 	/**
